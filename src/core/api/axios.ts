@@ -3,7 +3,7 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { ApiError, ApiResponse } from './types';
 import { handleAxiosError } from './utils';
 
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://dummyjson.com';
+const API_BASE_URL = import.meta.env.API_BASE_URL || 'http://localhost:3000';
 
 const apiInstance: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,

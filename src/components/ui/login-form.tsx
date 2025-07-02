@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { cn } from '@/lib/utils';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,11 +14,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { routes } from '@/core/router/routes';
-import { LoginService } from '@/core/services/login-service';
+import { AuthService } from '@/core/services/auth-service';
+import { cn } from '@/lib/utils';
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'form'>) {
-  const [username, setUsername] = useState<string>('emilys');
-  const [password, setPassword] = useState<string>('emilyspass');
+  const [email, setEmail] = useState<string>('admin@sistema.com');
+  const [password, setPassword] = useState<string>('Admin@2025!');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
 
@@ -30,8 +30,9 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'form'>)
       }
 
       try {
-        const loginService = new LoginService();
-        await loginService.login({ username, password });
+        const loginService = new AuthService();
+        await loginService.login({ email, password });
+
       } catch (error) {
         setErrorMessage(
           `Login failed. Please check your credentials. ${error instanceof Error ? error.message : 'Check your credentials'}`
@@ -39,7 +40,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'form'>)
         setShowErrorDialog(true);
       }
     },
-    [username, password]
+    [email, password]
   );
 
   return (
@@ -56,8 +57,8 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'form'>)
             type="text"
             placeholder="rafaelb13"
             required
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="grid gap-3">

@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { cn } from '@/lib/utils';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,6 +14,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { routes } from '@/core/router/routes';
+import { AuthService } from '@/core/services/auth-service';
+import { cn } from '@/lib/utils';
 
 export function SignUpForm({ className, ...props }: React.ComponentProps<'form'>) {
   const [name, setName] = useState<string>('');
@@ -39,6 +40,15 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'form'>
         if (!name || !email || !password) {
           throw new Error('Please fill in all fields');
         }
+
+        const signUpService = new AuthService();
+
+        await signUpService.register({
+          name,
+          email,
+          username: email.split('@')[0], // Usando o email como username
+          password,
+        });
 
         // Aqui você implementaria a lógica de registro
         // Simular sucesso ou erro
