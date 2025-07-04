@@ -4,4 +4,6 @@ export const routes = {
   show_all: '/upload',
   login: '/login',
   sign_up: '/signup',
+  profile: '/profile',
+  two_factor_authentication: '/two-factor-authentication',
 };

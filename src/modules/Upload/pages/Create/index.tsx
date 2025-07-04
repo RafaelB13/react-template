@@ -1,29 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useFetchUserIP } from '@/core/hooks/fetch-user-ip.hook';
-import { IUserResponse, UserService } from '@/core/services/user-service';
 
 export const UploadCreatePage = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
   const [isPasteActive, setIsPasteActive] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { userIP } = useFetchUserIP();
-  const [user, setUser] = useState<IUserResponse>({ role: '', email: '', username: '' });
-
-  useMemo(async () => {
-    const userService = new UserService();
-
-    try {
-      const data = await userService.getUser();
-      setUser(data);
-
-    } catch (error) {
-      throw new Error(`Error fetching user data: ${error}`);
-    }
-  }, [])
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -149,11 +133,9 @@ export const UploadCreatePage = () => {
   }, []);
 
   return (
-    <>
-      <h1 className="text-muted-foreground block mt-4 text-center text-2xl">Hi, {user.name || user.email}</h1>
-      <h1 className="text-muted-foreground block mb-2 text-center text-2xl">🛜 IP Address: {userIP?.ip}</h1>
-      <div className="bg-background flex min-h-screen flex-col items-center justify-center p-6">
-        <span className="text-muted-foreground block my-4 text-center">Upload your files securely to S3</span>
+    <div className="bg-background flex h-screen flex-col p-6">
+      <main className="flex flex-1 flex-col items-center justify-center">
+        <span className="text-muted-foreground my-4 block text-center">Upload your files securely to S3</span>
         <div className="w-full max-w-md">
           <Card>
             <CardHeader className="text-center">
@@ -238,7 +220,7 @@ export const UploadCreatePage = () => {
             </CardContent>
           </Card>
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 };

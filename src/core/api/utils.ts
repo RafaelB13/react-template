@@ -5,32 +5,32 @@ import { AxiosError } from 'axios';
 import { ApiError } from './types';
 
 /**
- * Normaliza e extrai informações de um erro Axios.
- * @param error O erro Axios a ser processado.
- * @returns Um objeto ApiError com uma mensagem padronizada.
+ * Normalizes and extracts information from an Axios error.
+ * @param error The Axios error to be processed.
+ * @returns An ApiError object with a standardized message.
  */
 export const handleAxiosError = (error: AxiosError): ApiError => {
-  let message = 'Ocorreu um erro inesperado.';
+  let message = 'An unexpected error occurred.';
   let statusCode = 500;
 
   if (error.response) {
-    // O servidor respondeu com um status de erro (2xx não)
+    // The server responded with an error status (non-2xx)
     const { data, status } = error.response;
     statusCode = status;
 
-    if (typeof data === 'object' && data !== null && 'message' in data) {
+    if (typeof data === 'object' && data !== null && (data as any).message) {
       message = (data as any).message;
     } else if (typeof data === 'string') {
       message = data;
     } else {
-      message = `Erro do servidor: ${status}`;
+      message = `Server error: ${status}`;
     }
   } else if (error.request) {
-    // A requisição foi feita, mas nenhuma resposta foi recebida
-    message = 'Nenhuma resposta recebida do servidor. Verifique sua conexão de rede.';
-    statusCode = 0; // Ou outro código para indicar ausência de resposta
+    // The request was made, but no response was received
+    message = 'No response received from the server. Please check your network connection.';
+    statusCode = 0; // Or another code to indicate no response
   } else {
-    // Algo mais aconteceu ao configurar a requisição
+    // Something else happened while setting up the request
     message = error.message;
   }
 

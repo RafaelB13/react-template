@@ -1,20 +1,28 @@
 import apiInstance from '@/core/api/axios';
 
 export interface IUserResponse {
+  id: string;
   role: string;
   email: string;
   username: string;
   name?: string;
+  created_at: string;
+  updated_at: string;
 }
+
+export type IUpdateUserDTO = Partial<Omit<IUserResponse, 'role' | 'id'>>;
 
 export class UserService {
   async getUser(): Promise<IUserResponse> {
-    const response = await apiInstance.get<IUserResponse>('/users/me', {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}`,
-      },
-    });
+    const response = await apiInstance.get<IUserResponse>('/users/me');
+
+    localStorage.setItem('user', JSON.stringify(response.data));
+
+    return response.data;
+  }
+
+  async updateUser(id: string, data: IUpdateUserDTO): Promise<IUserResponse> {
+    const response = await apiInstance.patch<IUserResponse>(`/users/${id}`, data);
 
     localStorage.setItem('user', JSON.stringify(response.data));
 

@@ -1,9 +1,13 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
+import { MainLayout } from '@/core/layout';
 import LoginPage from '@/modules/Auth/page/Login';
 import SignUpPage from '@/modules/Auth/page/SignIn';
+import TwoFactorAuthPage from '@/modules/Auth/page/TwoFactorAuthenctication';
+import NotFoundPage from '@/modules/Show/pages/NotFound';
 import { UploadCreatePage } from '@/modules/Upload/pages/Create';
+import { UserProfilePage } from '@/modules/User/pages/Profile';
 import { routes } from './routes';
 
 const AppRouter: React.FC = () => (
@@ -16,10 +20,26 @@ const AppRouter: React.FC = () => (
       }
     >
       <Routes>
-        <Route path={routes.home} element={<UploadCreatePage />} />
+        <Route
+          path={routes.home}
+          element={
+            <MainLayout>
+              <UploadCreatePage />
+            </MainLayout>
+          }
+        />
         <Route path={routes.login} element={<LoginPage />} />
         <Route path={routes.sign_up} element={<SignUpPage />} />
-        <Route path={'*'} element={<LoginPage />} />
+        <Route path={routes.two_factor_authentication} element={<TwoFactorAuthPage />} />
+        <Route
+          path={routes.profile}
+          element={
+            <MainLayout>
+              <UserProfilePage />
+            </MainLayout>
+          }
+        />
+        <Route path={'*'} element={<NotFoundPage />} />
       </Routes>
     </React.Suspense>
   </Router>

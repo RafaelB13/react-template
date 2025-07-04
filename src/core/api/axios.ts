@@ -10,8 +10,9 @@ const apiInstance: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
+    Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}`,
   },
-  timeout: 10000, // Set a timeout for requests
+  timeout: 10000,
 });
 
 apiInstance.interceptors.request.use(
@@ -29,13 +30,13 @@ apiInstance.interceptors.request.use(
 );
 
 /**
- * Interceptor de Resposta:
- * Processa respostas bem-sucedidas e trata erros da API.
+ * Response Interceptor:
+ * Processes successful responses and handles API errors.
  */
 apiInstance.interceptors.response.use(
   <T>(response: AxiosResponse<T>): AxiosResponse<ApiResponse<T>> => {
-    // Retorna a resposta, opcionalmente encapsulando em ApiResponse
-    // Se sua API já retorna um objeto com 'data', 'message', etc., adapte aqui.
+    // Returns the response, optionally wrapping it in ApiResponse
+    // If your API already returns an object with 'data', 'message', etc., adapt here.
     return {
       ...response,
       data: response.data,
@@ -44,15 +45,17 @@ apiInstance.interceptors.response.use(
     } as AxiosResponse<ApiResponse<T>>;
   },
   (error: AxiosError) => {
-    // Tratar erros de resposta
+    // Handle response errors
     const apiError: ApiError = handleAxiosError(error);
 
-    // Exemplo: Redirecionar para login em caso de 401 Unauthorized
-    if (apiError.statusCode === 401) {
-      window.location.href = '/login'; // Descomente para implementar redirecionamento
+    const authRoutes = ['/login', '/signup', '/two-factor-authentication'];
+    const isAuthRoute = authRoutes.includes(window.location.pathname);
+
+    if (apiError.statusCode === 401 && !isAuthRoute) {
+      window.location.href = '/login';
     }
 
-    return Promise.reject(apiError); // Rejeita a Promise com o erro padronizado
+    return Promise.reject(apiError); // Rejects the Promise with the standardized error
   }
 );
 

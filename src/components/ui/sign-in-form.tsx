@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { cn } from '@/lib/utils';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,7 +16,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { routes } from '@/core/router/routes';
 import { AuthService } from '@/core/services/auth-service';
-import { cn } from '@/lib/utils';
 
 export function SignUpForm({ className, ...props }: React.ComponentProps<'form'>) {
   const [name, setName] = useState<string>('');
