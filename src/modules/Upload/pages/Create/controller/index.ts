@@ -1,21 +1,68 @@
-export class CreateController {
-  async uploadFile(file: File): Promise<void> {
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
+import { IUserResponse, UserService } from '@/core/services/user-service';
 
-      if (!response.ok) {
-        throw new Error('File upload failed');
+export const useUploadCreateController = () => {
+  const [user, setUser] = useState<IUserResponse>();
+  const [file, setFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+
+  useEffect(() => {
+    const userService = new UserService();
+    const fetchUser = async () => {
+      try {
+        const data = await userService.getMe();
+        setUser(data);
+      } catch {
+        toast.error('Failed to fetch user data. Please refresh the page.');
       }
+    };
 
-      await response.json();
-    } catch (error) {
-      throw new Error(`Error uploading file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    fetchUser();
+  }, []);
+
+  const handleFileSelect = (selectedFile: File | null) => {
+    setFile(selectedFile);
+    setUploadSuccess(false); // Reset success state on new file selection
+  };
+
+  const handleUpload = async () => {
+    if (!file) {
+      toast.error('Please select a file to upload.');
+      return;
     }
-  }
-}
+
+    setIsUploading(true);
+    setUploadSuccess(false);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+
+      // await apiInstance.post('/upload', formData, {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data',
+      //   },
+      // });
+
+      setUploadSuccess(true);
+
+      toast.success('File uploaded successfully!');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to upload file.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  return {
+    user,
+    file,
+    isUploading,
+    uploadSuccess,
+    handleFileSelect,
+    handleUpload,
+  };
+};

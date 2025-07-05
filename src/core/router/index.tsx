@@ -5,10 +5,11 @@ import { MainLayout } from '@/core/layout';
 import LoginPage from '@/modules/Auth/page/Login';
 import SignUpPage from '@/modules/Auth/page/SignIn';
 import TwoFactorAuthPage from '@/modules/Auth/page/TwoFactorAuthenctication';
+import { Home } from '@/modules/Home';
 import NotFoundPage from '@/modules/Show/pages/NotFound';
 import { UploadCreatePage } from '@/modules/Upload/pages/Create';
 import { UserProfilePage } from '@/modules/User/pages/Profile';
-import { routes } from './routes';
+import { routes } from '@core/router/routes';
 
 const AppRouter: React.FC = () => (
   <Router>
@@ -21,7 +22,7 @@ const AppRouter: React.FC = () => (
     >
       <Routes>
         <Route
-          path={routes.home}
+          path={routes.upload}
           element={
             <MainLayout>
               <UploadCreatePage />
@@ -36,6 +37,14 @@ const AppRouter: React.FC = () => (
           element={
             <MainLayout>
               <UserProfilePage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path={routes.home}
+          element={
+            <MainLayout>
+              <Home />
             </MainLayout>
           }
         />

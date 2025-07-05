@@ -85,6 +85,7 @@ export class AuthService {
       }
 
       localStorage.setItem('accessToken', response.data.access_token);
+      localStorage.setItem('user', JSON.stringify(response.data));
       return response.data;
     } catch (error: unknown) {
       if (error instanceof BusinessError) throw error;

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { NavMenu } from '@/components/nav-menu';
 import { SettingsMenu } from '@/components/settings-menu';
+import GlobalLoader from '@/components/ui/global-loader';
 import StarryBackground from '@/components/ui/starry-background';
 
 interface MainLayoutProps {
@@ -11,6 +12,7 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
     <div className="relative flex h-screen flex-col p-6">
+      <GlobalLoader />
       <StarryBackground />
       <header className="relative z-10 mb-6 flex items-center justify-between">
         <NavMenu />

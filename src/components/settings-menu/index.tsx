@@ -8,7 +8,7 @@ import { useSettingsMenuStore } from '@/stores/use-settings-menu.store';
 
 export const SettingsMenu = () => {
   const { isOpen, toggle } = useSettingsMenuStore();
-  // Pega o usuário do localStorage (ajuste conforme necessário para seu contexto)
+
   const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || '{}') : {};
 
   return (
@@ -16,10 +16,10 @@ export const SettingsMenu = () => {
       <PopoverTrigger asChild>
         <div className="flex cursor-pointer items-center gap-2">
           <div className="flex flex-col items-end justify-center">
-            {user?.username && (
-              <span className="text-foreground max-w-[120px] truncate text-base font-medium">{user.username}</span>
+            {user?.name && (
+              <span className="text-foreground max-w-[120px] truncate text-base font-medium">{user.name}</span>
             )}
-            {user?.email && user?.username && (
+            {user?.email && user?.name && (
               <span className="text-muted-foreground max-w-[140px] truncate text-xs">{user.email}</span>
             )}
           </div>

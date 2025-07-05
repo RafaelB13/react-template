@@ -13,7 +13,7 @@ export interface IUserResponse {
 export type IUpdateUserDTO = Partial<Omit<IUserResponse, 'role' | 'id'>>;
 
 export class UserService {
-  async getUser(): Promise<IUserResponse> {
+  async getMe(): Promise<IUserResponse> {
     const response = await apiInstance.get<IUserResponse>('/users/me');
 
     localStorage.setItem('user', JSON.stringify(response.data));

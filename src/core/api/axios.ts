@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
+import { useLoadingStore } from '../stores/use-loading.store';
 import { ApiError, ApiResponse } from './types';
 import { handleAxiosError } from './utils';
 
@@ -17,7 +18,7 @@ const apiInstance: AxiosInstance = axios.create({
 
 apiInstance.interceptors.request.use(
   (config) => {
-    // You can add any request interceptors here, like adding auth tokens
+    useLoadingStore.getState().incrementRequestCount();
     const token = localStorage.getItem('accessToken');
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
@@ -25,6 +26,7 @@ apiInstance.interceptors.request.use(
     return config;
   },
   (error) => {
+    useLoadingStore.getState().decrementRequestCount();
     return Promise.reject(error);
   }
 );
@@ -35,8 +37,7 @@ apiInstance.interceptors.request.use(
  */
 apiInstance.interceptors.response.use(
   <T>(response: AxiosResponse<T>): AxiosResponse<ApiResponse<T>> => {
-    // Returns the response, optionally wrapping it in ApiResponse
-    // If your API already returns an object with 'data', 'message', etc., adapt here.
+    useLoadingStore.getState().decrementRequestCount();
     return {
       ...response,
       data: response.data,
@@ -45,7 +46,7 @@ apiInstance.interceptors.response.use(
     } as AxiosResponse<ApiResponse<T>>;
   },
   (error: AxiosError) => {
-    // Handle response errors
+    useLoadingStore.getState().decrementRequestCount();
     const apiError: ApiError = handleAxiosError(error);
 
     const authRoutes = ['/login', '/signup', '/two-factor-authentication'];

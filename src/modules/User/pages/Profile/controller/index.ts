@@ -14,7 +14,7 @@ export const useUserProfileController = () => {
     const userService = new UserService();
     const fetchUser = async () => {
       try {
-        const data = await userService.getUser();
+        const data = await userService.getMe();
         setUser(data);
         setFormData(data);
       } catch {

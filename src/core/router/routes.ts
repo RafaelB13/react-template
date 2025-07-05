@@ -1,5 +1,6 @@
 export const routes = {
-  home: '/upload',
+  home: '/',
+  upload: '/upload',
   show_by_id: '/upload/:id',
   show_all: '/upload',
   login: '/login',

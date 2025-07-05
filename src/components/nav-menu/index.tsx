@@ -1,14 +1,18 @@
 import { Link, useLocation } from 'react-router-dom';
 
-import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button-variants';
 import { routes } from '@/core/router/routes';
+import { cn } from '@/lib/utils';
 
 const menuItems = [
   {
     href: routes.home,
-    label: 'Upload',
+    label: 'Home',
   },
+  {
+    href: routes.upload,
+    label: 'Upload',
+  }
 ];
 
 export const NavMenu = () => {
