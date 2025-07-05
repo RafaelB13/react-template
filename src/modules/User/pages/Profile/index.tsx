@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { SuccessAnimation } from '@/components/success-animation';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -15,7 +16,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { SuccessAnimation } from '@/components/success-animation';
 import { useUserProfileController } from './controller';
 
 export const UserProfilePage = () => {
@@ -49,10 +49,10 @@ export const UserProfilePage = () => {
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
               <div className="grid max-w-xs gap-2">
-                <Label htmlFor="username">Name</Label>
+                <Label htmlFor="name">Name</Label>
                 <Input
-                  id="username"
-                  value={formData.username || ''}
+                  id="name"
+                  value={formData.name || ''}
                   onChange={handleChange}
                   disabled={!isEditing}
                   size={32}

@@ -1,5 +1,6 @@
 import apiInstance from '@/core/api/axios';
 import { BusinessError } from '@/core/errors/business-errors';
+import { routes } from '@/core/router/routes';
 
 export interface LoginCredentials {
   email: string;
@@ -39,6 +40,11 @@ export class AuthService {
       }
 
       localStorage.setItem('accessToken', response.data.access_token);
+
+      const user = await apiInstance.get('/users/me');
+
+      localStorage.setItem('user', JSON.stringify(user.data));
+
       return response.data;
     } catch (error: unknown) {
       if (error instanceof BusinessError) throw error;
@@ -98,5 +104,11 @@ export class AuthService {
       }
       throw new BusinessError(message);
     }
+  }
+
+  logout(): void {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('data');
+    window.location.href = routes.login;
   }
 }

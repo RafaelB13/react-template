@@ -11,12 +11,12 @@ export const useUserProfileController = () => {
   const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
-    const userService = new UserService();
     const fetchUser = async () => {
       try {
-        const data = await userService.getMe();
+        const dataString = localStorage.getItem('user') || '{}';
+        const data = JSON.parse(dataString);
         setUser(data);
-        setFormData(data);
+        setFormData(data ? { ...data } : {});
       } catch {
         toast.error('Failed to fetch user data.');
       }

@@ -7,4 +7,5 @@ export const routes = {
   sign_up: '/signup',
   profile: '/profile',
   two_factor_authentication: '/two-factor-authentication',
+  logout: '/logout',
 };

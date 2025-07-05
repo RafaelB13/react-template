@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import { MainLayout } from '@/core/layout';
+import { routes } from '@/core/router/routes';
 import LoginPage from '@/modules/Auth/page/Login';
 import SignUpPage from '@/modules/Auth/page/SignIn';
 import TwoFactorAuthPage from '@/modules/Auth/page/TwoFactorAuthenctication';
@@ -9,7 +10,6 @@ import { Home } from '@/modules/Home';
 import NotFoundPage from '@/modules/Show/pages/NotFound';
 import { UploadCreatePage } from '@/modules/Upload/pages/Create';
 import { UserProfilePage } from '@/modules/User/pages/Profile';
-import { routes } from '@core/router/routes';
 
 const AppRouter: React.FC = () => (
   <Router>
