@@ -8,4 +8,5 @@ export const routes = {
   profile: '/profile',
   two_factor_authentication: '/two-factor-authentication',
   logout: '/logout',
+  auth_callback: '/auth/callback',
 };

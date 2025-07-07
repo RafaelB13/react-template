@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 import { SuccessAnimation } from '@/components/success-animation';
 import {
@@ -19,13 +18,28 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUserProfileController } from './controller';
 
 export const UserProfilePage = () => {
-  const { formData, isEditing, isLoading, showSuccess, handleEditClick, handleSaveClick, handleChange } =
-    useUserProfileController();
-  const [open2faDialog, setOpen2faDialog] = useState(false);
+  const {
+    user,
+    formData,
+    isEditing,
+    showSuccess,
+    handleEditClick,
+    handleSaveClick,
+    handleChange,
+    handleEnable2FA,
+    handleDisable2FA,
+  } = useUserProfileController();
+  const [openEnable2faDialog, setOpenEnable2faDialog] = useState(false);
+  const [openDisable2faDialog, setOpenDisable2faDialog] = useState(false);
 
-  const handleConfirm2FA = () => {
-    setOpen2faDialog(false);
-    toast.success(`A confirmation email was sent to ${formData.email}. Please check your inbox.`);
+  const handleConfirmEnable2FA = async () => {
+    setOpenEnable2faDialog(false);
+    await handleEnable2FA();
+  };
+
+  const handleConfirmDisable2FA = async () => {
+    setOpenDisable2faDialog(false);
+    await handleDisable2FA();
   };
 
   return (
@@ -87,11 +101,11 @@ export const UserProfilePage = () => {
               <div className="flex justify-end gap-2">
                 {isEditing ? (
                   <>
-                    <Button variant="outline" onClick={handleEditClick} disabled={isLoading}>
+                    <Button variant="outline" onClick={handleEditClick}>
                       Cancel
                     </Button>
-                    <Button onClick={handleSaveClick} disabled={isLoading}>
-                      {isLoading ? 'Saving...' : 'Save'}
+                    <Button onClick={handleSaveClick}>
+                      {'Save'}
                     </Button>
                   </>
                 ) : (
@@ -102,7 +116,7 @@ export const UserProfilePage = () => {
           </Card>
         </TabsContent>
         <TabsContent value="security" className="min-h-[480px]">
-          <AlertDialog open={open2faDialog} onOpenChange={setOpen2faDialog}>
+          <AlertDialog open={openEnable2faDialog} onOpenChange={setOpenEnable2faDialog}>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Enable Two-Factor Authentication</AlertDialogTitle>
@@ -114,10 +128,29 @@ export const UserProfilePage = () => {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <Button variant="outline" onClick={() => setOpen2faDialog(false)}>
+                <Button variant="outline" onClick={() => setOpenEnable2faDialog(false)}>
                   Cancel
                 </Button>
-                <Button onClick={handleConfirm2FA}>Confirm</Button>
+                <Button onClick={handleConfirmEnable2FA}>Confirm</Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <AlertDialog open={openDisable2faDialog} onOpenChange={setOpenDisable2faDialog}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Disable Two-Factor Authentication</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to disable two-factor authentication? This will reduce the security of your
+                  account.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <Button variant="outline" onClick={() => setOpenDisable2faDialog(false)}>
+                  Cancel
+                </Button>
+                <Button variant="destructive" onClick={handleConfirmDisable2FA}>
+                  Disable
+                </Button>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
@@ -133,7 +166,17 @@ export const UserProfilePage = () => {
                     <Label htmlFor="two-factor-auth">Two-Factor Authentication</Label>
                     <p className="text-muted-foreground text-sm">Add an extra layer of security to your account.</p>
                   </div>
-                  <Switch id="two-factor-auth" onCheckedChange={(checked) => checked && setOpen2faDialog(true)} />
+                  <Switch
+                    id="two-factor-auth"
+                    checked={!!user?.isTwoFactorAuthenticationEnabled}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setOpenEnable2faDialog(true);
+                      } else {
+                        setOpenDisable2faDialog(true);
+                      }
+                    }}
+                  />
                 </div>
                 <div className="flex items-center justify-between rounded-lg border p-4">
                   <div>
@@ -162,6 +205,7 @@ export const UserProfilePage = () => {
                   <Input id="new-password" type="password" size={32} className="h-8 text-sm" />
                 </div>
                 <div className="grid max-w-xs gap-2">
+
                   <Label htmlFor="confirm-password">Confirm New Password</Label>
                   <Input id="confirm-password" type="password" size={32} className="h-8 text-sm" />
                 </div>

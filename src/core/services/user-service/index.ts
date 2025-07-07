@@ -6,6 +6,7 @@ export interface IUserResponse {
   email: string;
   username: string;
   name?: string;
+  isTwoFactorAuthenticationEnabled: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -19,6 +20,10 @@ export class UserService {
     localStorage.setItem('user', JSON.stringify(response.data));
 
     return response.data;
+  }
+
+  async getUser(): Promise<IUserResponse> {
+    return this.getMe();
   }
 
   async updateUser(id: string, data: IUpdateUserDTO): Promise<IUserResponse> {

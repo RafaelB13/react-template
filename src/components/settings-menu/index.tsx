@@ -2,7 +2,7 @@ import { Cog, LogOut, User } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { LogoutAnimation } from '@/components/logout-animation';
+import { SuccessAnimation } from '@/components/success-animation';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { routes } from '@/core/router/routes';
@@ -25,7 +25,7 @@ export const SettingsMenu = () => {
 
   return (
     <Popover open={isOpen} onOpenChange={toggle}>
-      {showAnimation && <LogoutAnimation />}
+      {showAnimation && <SuccessAnimation />}
       <PopoverTrigger asChild>
         <div className="flex cursor-pointer items-center gap-2">
           <div className="flex flex-col items-end justify-center">

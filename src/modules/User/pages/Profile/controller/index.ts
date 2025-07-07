@@ -1,29 +1,33 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { AuthService } from '@/core/services/auth-service';
 import { IUpdateUserDTO, IUserResponse, UserService } from '@/core/services/user-service';
 
 export const useUserProfileController = () => {
   const [user, setUser] = useState<IUserResponse>();
   const [formData, setFormData] = useState<IUpdateUserDTO>({});
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+
   const [showSuccess, setShowSuccess] = useState(false);
+  const userService = useMemo(() => new UserService(), []);
+  const authService = new AuthService();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const dataString = localStorage.getItem('user') || '{}';
-        const data = JSON.parse(dataString);
+        const data = await userService.getUser();
         setUser(data);
         setFormData(data ? { ...data } : {});
-      } catch {
-        toast.error('Failed to fetch user data.');
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message);
+        }
       }
     };
 
     fetchUser();
-  }, []);
+  }, [userService]);
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
@@ -33,8 +37,6 @@ export const useUserProfileController = () => {
   };
 
   const handleSaveClick = async () => {
-    const userService = new UserService();
-    setIsLoading(true);
     try {
       const updatedUser = await userService.updateUser(user?.id || '', formData);
       setUser(updatedUser);
@@ -44,8 +46,6 @@ export const useUserProfileController = () => {
       toast.success('Profile updated successfully!');
     } catch {
       toast.error('Failed to update profile.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -53,14 +53,38 @@ export const useUserProfileController = () => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
+  const handleEnable2FA = async () => {
+    try {
+      await authService.requestTwoFactorAuthentication();
+      toast.success('A confirmation email was sent to your email.');
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
+  };
+
+  const handleDisable2FA = async () => {
+    try {
+      await authService.disableTwoFactorAuthentication();
+      setUser((prevUser) => (prevUser ? { ...prevUser, isTwoFactorAuthenticationEnabled: false } : undefined));
+      toast.success('Two-factor authentication disabled successfully.');
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
+  };
+
   return {
     user,
     formData,
     isEditing,
-    isLoading,
     showSuccess,
     handleEditClick,
     handleSaveClick,
     handleChange,
+    handleEnable2FA,
+    handleDisable2FA,
   };
 };

@@ -3,6 +3,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import { MainLayout } from '@/core/layout';
 import { routes } from '@/core/router/routes';
+import { AuthCallbackPage } from '@/modules/Auth/page/Callback';
 import LoginPage from '@/modules/Auth/page/Login';
 import SignUpPage from '@/modules/Auth/page/SignIn';
 import TwoFactorAuthPage from '@/modules/Auth/page/TwoFactorAuthenctication';
@@ -21,6 +22,7 @@ const AppRouter: React.FC = () => (
       }
     >
       <Routes>
+        <Route path={routes.auth_callback} element={<AuthCallbackPage />} />
         <Route
           path={routes.upload}
           element={

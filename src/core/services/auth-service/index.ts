@@ -39,6 +39,11 @@ export class AuthService {
         throw new BusinessError(response.data.message || 'Login failed');
       }
 
+      if (response.data.isTwoFactorAuthenticationEnabled) {
+        window.location.href = `${routes.two_factor_authentication}?email=${encodeURIComponent(credentials.email)}`;
+        return response.data;
+      }
+
       localStorage.setItem('accessToken', response.data.access_token);
 
       const user = await apiInstance.get('/users/me');
@@ -91,7 +96,10 @@ export class AuthService {
       }
 
       localStorage.setItem('accessToken', response.data.access_token);
-      localStorage.setItem('user', JSON.stringify(response.data));
+
+      const user = await apiInstance.get('/users/me');
+      localStorage.setItem('user', JSON.stringify(user.data));
+
       return response.data;
     } catch (error: unknown) {
       if (error instanceof BusinessError) throw error;
@@ -110,5 +118,59 @@ export class AuthService {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('data');
     window.location.href = routes.login;
+  }
+
+  async requestTwoFactorAuthentication(): Promise<{ message: string }> {
+    try {
+      const response = await apiInstance.post('/auth/2fa/enable/request');
+
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof BusinessError) throw error;
+      let message = 'Failed to request two-factor authentication.';
+      if (error instanceof Error) message += ' ' + error.message;
+      else if (typeof error === 'object' && error !== null && 'message' in error) {
+        message += ' ' + String((error as { message: string }).message);
+      } else if (typeof error === 'string') {
+        message += ' ' + error;
+      }
+      throw new BusinessError(message);
+    }
+  }
+
+  async enableTwoFactorAuthentication(token: string): Promise<void> {
+    try {
+      await apiInstance.get(`/auth/2fa/enable?token=${token}`);
+    } catch (error: unknown) {
+      if (error instanceof BusinessError) throw error;
+      let message = 'Failed to enable two-factor authentication.';
+      if (error instanceof Error) message += ' ' + error.message;
+      else if (typeof error === 'object' && error !== null && 'message' in error) {
+        message += ' ' + String((error as { message: string }).message);
+      } else if (typeof error === 'string') {
+        message += ' ' + error;
+      }
+      throw new BusinessError(message);
+    }
+  }
+
+  async disableTwoFactorAuthentication(): Promise<{message: string}> {
+    try {
+      const response = await apiInstance.post('/auth/2fa/turn-off');
+      
+      if (response.status === 201) {
+        return response.data;
+      }
+    } catch (error: unknown) {
+      if (error instanceof BusinessError) throw error;
+      let message = 'Failed to disable two-factor authentication.';
+      if (error instanceof Error) message += ' ' + error.message;
+      else if (typeof error === 'object' && error !== null && 'message' in error) {
+        message += ' ' + String((error as { message: string }).message);
+      } else if (typeof error === 'string') {
+        message += ' ' + error;
+      }
+      throw new BusinessError(message);
+    }
   }
 }
