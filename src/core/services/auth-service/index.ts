@@ -1,5 +1,7 @@
+
 import apiInstance from '@/core/api/axios';
 import { BusinessError } from '@/core/errors/business-errors';
+import { handleServiceError } from '@/core/errors/handle-error';
 import { routes } from '@/core/router/routes';
 
 export interface LoginCredentials {
@@ -52,15 +54,7 @@ export class AuthService {
 
       return response.data;
     } catch (error: unknown) {
-      if (error instanceof BusinessError) throw error;
-      // Try to extract the error message from the API response, if it exists
-      let apiMessage = 'Unknown error';
-      if (typeof error === 'object' && error !== null && 'message' in error) {
-        apiMessage = String((error as { message: string }).message);
-      } else if (typeof error === 'string') {
-        apiMessage = error;
-      }
-      throw new BusinessError(apiMessage);
+      handleServiceError(error, 'Login failed');
     }
   }
 
@@ -75,15 +69,7 @@ export class AuthService {
       localStorage.setItem('accessToken', response.data.access_token);
       return response.data;
     } catch (error: unknown) {
-      if (error instanceof BusinessError) throw error;
-      let message = 'Unknown error';
-      if (error instanceof Error) message = error.message;
-      else if (typeof error === 'object' && error !== null && 'message' in error) {
-        message = String((error as { message: string }).message);
-      } else if (typeof error === 'string') {
-        message = error;
-      }
-      throw new BusinessError(message);
+      handleServiceError(error, 'Registration failed');
     }
   }
 
@@ -102,15 +88,7 @@ export class AuthService {
 
       return response.data;
     } catch (error: unknown) {
-      if (error instanceof BusinessError) throw error;
-      let message = 'Two-factor authentication failed due to network or server error.';
-      if (error instanceof Error) message += ' ' + error.message;
-      else if (typeof error === 'object' && error !== null && 'message' in error) {
-        message += ' ' + String((error as { message: string }).message);
-      } else if (typeof error === 'string') {
-        message += ' ' + error;
-      }
-      throw new BusinessError(message);
+      handleServiceError(error, 'Two-factor authentication failed');
     }
   }
 
@@ -126,15 +104,7 @@ export class AuthService {
 
       return response.data;
     } catch (error: unknown) {
-      if (error instanceof BusinessError) throw error;
-      let message = 'Failed to request two-factor authentication.';
-      if (error instanceof Error) message += ' ' + error.message;
-      else if (typeof error === 'object' && error !== null && 'message' in error) {
-        message += ' ' + String((error as { message: string }).message);
-      } else if (typeof error === 'string') {
-        message += ' ' + error;
-      }
-      throw new BusinessError(message);
+      handleServiceError(error, 'Failed to request two-factor authentication.');
     }
   }
 
@@ -142,19 +112,11 @@ export class AuthService {
     try {
       await apiInstance.get(`/auth/2fa/enable?token=${token}`);
     } catch (error: unknown) {
-      if (error instanceof BusinessError) throw error;
-      let message = 'Failed to enable two-factor authentication.';
-      if (error instanceof Error) message += ' ' + error.message;
-      else if (typeof error === 'object' && error !== null && 'message' in error) {
-        message += ' ' + String((error as { message: string }).message);
-      } else if (typeof error === 'string') {
-        message += ' ' + error;
-      }
-      throw new BusinessError(message);
+      handleServiceError(error, 'Failed to enable two-factor authentication.');
     }
   }
 
-  async disableTwoFactorAuthentication(): Promise<{message: string}> {
+  async disableTwoFactorAuthentication(): Promise<{ message: string }> {
     try {
       const response = await apiInstance.post('/auth/2fa/turn-off');
 
@@ -164,15 +126,7 @@ export class AuthService {
 
       return { message: 'Two-factor authentication was not disabled.' };
     } catch (error: unknown) {
-      if (error instanceof BusinessError) throw error;
-      let message = 'Failed to disable two-factor authentication.';
-      if (error instanceof Error) message += ' ' + error.message;
-      else if (typeof error === 'object' && error !== null && 'message' in error) {
-        message += ' ' + String((error as { message: string }).message);
-      } else if (typeof error === 'string') {
-        message += ' ' + error;
-      }
-      throw new BusinessError(message);
+      handleServiceError(error, 'Failed to disable two-factor authentication.');
     }
   }
 }
