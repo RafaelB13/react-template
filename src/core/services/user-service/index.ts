@@ -41,7 +41,7 @@ export class UserService {
       localStorage.setItem('user', JSON.stringify(response.data));
 
       return response.data;
-    } catch (error) {
+    } catch (error: unknown) {
       handleServiceError(error, 'Failed to update user.');
     }
   }
