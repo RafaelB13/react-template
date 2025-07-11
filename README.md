@@ -1,53 +1,78 @@
-# React + TypeScript + Vite
+# S3 File Uploader
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a modern, responsive web application designed for uploading files to an AWS S3 bucket. It features a clean user interface, secure user authentication, and a straightforward file management process.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses
-  [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast
-  Refresh
+- **Secure Authentication:** Multi-step sign-in process including login, password, and two-factor authentication.
+- **File Upload:** A dedicated and intuitive interface for uploading files.
+- **User Profile:** A section for users to view and manage their profile information.
+- **Theme Customization:** Switch between light and dark modes for user preference.
+- **Responsive Design:** A seamless experience across different devices and screen sizes.
+- **Global State Management:** Centralized state management for a predictable application state.
 
-## Expanding the ESLint configuration
+## 🚀 Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Framework:** [React](https://react.dev/) with [Vite](https://vitejs.dev/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **UI Components:** [shadcn/ui](https://ui.shadcn.com/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **State Management:** [Zustand](https://zustand-demo.pmnd.rs/)
+- **Routing:** [React Router](https://reactrouter.com/)
+- **HTTP Client:** [Axios](https://axios-http.com/)
+- **Animations:** [Framer Motion](https://www.framer.com/motion/)
+- **Linting & Formatting:** [ESLint](https://eslint.org/) & [Prettier](https://prettier.io/)
 
-- Configure the top-level `parserOptions` property like this:
+## ⚙️ Getting Started
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
+Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
+
+### Prerequisites
+
+Make sure you have [Bun](https://bun.sh/) installed on your system.
+
+### Installation
+
+1.  Clone the repository:
+    ```bash
+    git clone https://your-repository-url.git
+    cd upload-to-s3
+    ```
+
+2.  Install the dependencies:
+    ```bash
+    bun install
+    ```
+
+### Environment Variables
+
+Create a `.env.local` file in the root of the project and add the necessary environment variables. These variables are required for the application to connect to the backend services and AWS S3.
+
+```env
+VITE_API_BASE_URL=your_api_base_url
+VITE_AWS_S3_BUCKET_NAME=your_s3_bucket_name
+VITE_AWS_S3_REGION=your_s3_region
+VITE_AWS_ACCESS_KEY_ID=your_aws_access_key
+VITE_AWS_SECRET_ACCESS_KEY=your_aws_secret_key
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or
-  `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Running the Application
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react';
+To start the development server, run the following command:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-});
+```bash
+bun run dev
 ```
+
+The application will be available at `http://localhost:5173`.
+
+## 📜 Available Scripts
+
+In the project directory, you can run:
+
+- `bun run dev`: Runs the app in the development mode.
+- `bun run build`: Builds the app for production.
+- `bun run lint`: Lints the code and fixes issues.
+- `bun run format`: Formats the code with Prettier.
+- `bun run preview`: Serves the production build locally.
+
