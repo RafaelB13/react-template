@@ -1,4 +1,6 @@
+
 import apiInstance from '@/core/api/axios';
+import { handleServiceError } from '@/core/errors/handle-error';
 
 export interface IUserResponse {
   id: string;
@@ -17,11 +19,15 @@ export type IUpdateUserDTO = Partial<Omit<IUserResponse, 'role' | 'id'>>;
 
 export class UserService {
   async getMe(): Promise<IUserResponse> {
-    const response = await apiInstance.get<IUserResponse>('/users/me');
+    try {
+      const response = await apiInstance.get<IUserResponse>('/users/me');
 
-    localStorage.setItem('user', JSON.stringify(response.data));
+      localStorage.setItem('user', JSON.stringify(response.data));
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      handleServiceError(error, 'Failed to fetch user data.');
+    }
   }
 
   async getUser(): Promise<IUserResponse> {
@@ -29,10 +35,14 @@ export class UserService {
   }
 
   async updateUser(id: string, data: IUpdateUserDTO): Promise<IUserResponse> {
-    const response = await apiInstance.patch<IUserResponse>(`/users/${id}`, data);
+    try {
+      const response = await apiInstance.patch<IUserResponse>(`/users/${id}`, data);
 
-    localStorage.setItem('user', JSON.stringify(response.data));
+      localStorage.setItem('user', JSON.stringify(response.data));
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      handleServiceError(error, 'Failed to update user.');
+    }
   }
 }
