@@ -5,9 +5,11 @@ import { Link } from 'react-router-dom';
 import { SuccessAnimation } from '@/components/success-animation';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { routes } from '@/core/router/routes';
 import { AuthService } from '@/core/services/auth-service';
 import { useSettingsMenuStore } from '@/stores/use-settings-menu.store';
+import { ThemeCustomizer } from '../theme-customizer';
 
 export const SettingsMenu = () => {
   const { isOpen, toggle } = useSettingsMenuStore();
@@ -41,26 +43,37 @@ export const SettingsMenu = () => {
           </Button>
         </div>
       </PopoverTrigger>
-      <PopoverContent className="w-56">
-        <div className="grid gap-4">
-          <div className="space-y-2">
-            <h4 className="font-medium leading-none">Settings</h4>
-            <p className="text-muted-foreground text-sm">Manage your account settings.</p>
-          </div>
-          <div className="grid gap-2">
-            <Link to={routes.profile}>
-              <Button variant="ghost" className="w-full cursor-pointer justify-start">
-                <User className="mr-2 h-4 w-4" />
-                Profile
-              </Button>
-            </Link>
+      <PopoverContent className="w-120">
+        <Tabs defaultValue="account">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="account">Account</TabsTrigger>
+            <TabsTrigger value="theme">Theme</TabsTrigger>
+          </TabsList>
+          <TabsContent value="account">
+            <div className="grid gap-4">
+              <div className="space-y-2">
+                <h4 className="font-medium leading-none">Settings</h4>
+                <p className="text-muted-foreground text-sm">Manage your account settings.</p>
+              </div>
+              <div className="grid gap-2">
+                <Link to={routes.profile}>
+                  <Button variant="ghost" className="w-full cursor-pointer justify-start">
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </Button>
+                </Link>
 
-            <Button onClick={handleLogout} variant="ghost" className="w-full cursor-pointer justify-start">
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </Button>
-          </div>
-        </div>
+                <Button onClick={handleLogout} variant="ghost" className="w-full cursor-pointer justify-start">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </Button>
+              </div>
+            </div>
+          </TabsContent>
+          <TabsContent value="theme">
+            <ThemeCustomizer />
+          </TabsContent>
+        </Tabs>
       </PopoverContent>
     </Popover>
   );

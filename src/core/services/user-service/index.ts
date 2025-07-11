@@ -7,6 +7,8 @@ export interface IUserResponse {
   username: string;
   name?: string;
   isTwoFactorAuthenticationEnabled: boolean;
+  themeColor?: string;
+  themeMode?: 'light' | 'dark' | 'system';
   created_at: string;
   updated_at: string;
 }

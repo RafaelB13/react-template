@@ -116,7 +116,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('accessToken');
-    localStorage.removeItem('data');
+    localStorage.removeItem('user');
     window.location.href = routes.login;
   }
 
@@ -157,10 +157,12 @@ export class AuthService {
   async disableTwoFactorAuthentication(): Promise<{message: string}> {
     try {
       const response = await apiInstance.post('/auth/2fa/turn-off');
-      
+
       if (response.status === 201) {
         return response.data;
       }
+
+      return { message: 'Two-factor authentication was not disabled.' };
     } catch (error: unknown) {
       if (error instanceof BusinessError) throw error;
       let message = 'Failed to disable two-factor authentication.';

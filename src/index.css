@@ -146,3 +146,19 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--primary) / 0.8);
 }
+
+/* Theme Colors */
+.theme-blue {
+  --primary: oklch(0.6 0.118 244.704);
+  --primary-foreground: oklch(0.985 0.001 106.423);
+}
+
+.theme-rose {
+  --primary: oklch(0.704 0.191 22.216);
+  --primary-foreground: oklch(0.985 0.001 106.423);
+}
+
+.theme-orange {
+  --primary: oklch(0.769 0.188 70.08);
+  --primary-foreground: oklch(0.147 0.004 49.25);
+}
