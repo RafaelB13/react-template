@@ -33,8 +33,6 @@ export function TwoFactorAuthForm({ className, ...props }: React.ComponentProps<
       }
 
       try {
-        const storageService = new StorageService();
-        const httpClient = new AxiosHttpClient();
         const loginService = new AuthGateway(storageService, httpClient);
         const result = await loginService.twoFactorAuthentication(code, storageService.getItem('emailFor2FA') || '');
 
