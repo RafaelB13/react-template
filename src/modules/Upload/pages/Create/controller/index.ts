@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { IUserResponse, UserService } from '@/core/services/user-service';
+import { IUserResponse } from '@/core/domain/user.types';
+import { UserGateway } from '@/core/infrastructure/gateways/user-gateway';
+import { StorageService } from '@/core/infrastructure/services/storage';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios-http-client';
+
+const storageService = new StorageService();
+const httpClient = new AxiosHttpClient();
 
 export const useUploadCreateController = () => {
   const [user, setUser] = useState<IUserResponse>();
@@ -10,7 +16,7 @@ export const useUploadCreateController = () => {
   const [uploadSuccess, setUploadSuccess] = useState(false);
 
   useEffect(() => {
-    const userService = new UserService();
+    const userService = new UserGateway(storageService, httpClient);
     const fetchUser = async () => {
       try {
         const data = await userService.getMe();

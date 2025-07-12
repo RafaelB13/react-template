@@ -1,20 +1,26 @@
 import { Cog, LogOut, User } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { SuccessAnimation } from '@/components/success-animation';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { routes } from '@/core/router/routes';
-import { AuthService } from '@/core/services/auth-service';
+import { routes } from '@/core/presentation/router/routes';
+import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
+import { StorageService } from '@/core/infrastructure/services/storage';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios-http-client';
 import { useSettingsMenuStore } from '@/stores/use-settings-menu.store';
 import { ThemeCustomizer } from '../theme-customizer';
+
+const storageService = new StorageService();
+const httpClient = new AxiosHttpClient();
 
 export const SettingsMenu = () => {
   const { isOpen, toggle } = useSettingsMenuStore();
   const [showAnimation, setShowAnimation] = useState(false);
-  const authService = new AuthService();
+  const authService = new AuthGateway(storageService, httpClient);
+  const navigate = useNavigate();
 
   const data = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || '{}') : {};
 
@@ -22,6 +28,7 @@ export const SettingsMenu = () => {
     setShowAnimation(true);
     setTimeout(() => {
       authService.logout();
+      navigate(routes.login);
     }, 1500);
   };
 

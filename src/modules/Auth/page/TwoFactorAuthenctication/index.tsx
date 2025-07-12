@@ -2,7 +2,7 @@ import { GalleryVerticalEnd } from 'lucide-react';
 
 import { TwoFactorAuthForm } from '@/components/ui/two-factor-form';
 import UploadBg from '@/assets/upload-login-logo.png';
-import { useFetchUserIP } from '@/core/hooks/fetch-user-ip.hook';
+import { useFetchUserIP } from '@/core/presentation/hooks/fetch-user-ip.hook';
 
 export default function TwoFactorAuthPage() {
   const { isUserIPLoading, userIP, userIpFetchError } = useFetchUserIP();

@@ -1,4 +1,4 @@
-import { routes } from '@/core/router/routes';
+import { routes } from '@/core/presentation/router/routes';
 import { motion } from 'framer-motion';
 import React from 'react';
 import { Link } from 'react-router-dom';

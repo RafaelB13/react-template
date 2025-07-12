@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
-import { useLoadingStore } from '../stores/use-loading.store';
+import { useLoadingStore } from '../../presentation/stores/use-loading.store';
 import { ApiError, ApiResponse } from './types';
 import { handleAxiosError } from './utils';
 

@@ -1,12 +1,16 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { routes } from '@/core/router/routes';
-import { AuthService } from '@/core/services/auth-service';
+import { routes } from '@/core/presentation/router/routes';
+import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
+import { StorageService } from '@/core/infrastructure/services/storage';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios-http-client';
 
 export const AuthCallbackPage = () => {
   const navigate = useNavigate();
-  const authService = new AuthService();
+  const storageService = new StorageService();
+  const httpClient = new AxiosHttpClient();
+  const authService = new AuthGateway(storageService, httpClient);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

@@ -13,12 +13,17 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { getBusinessErrorMessage } from '@/core/errors/business-errors';
-import { routes } from '@/core/router/routes';
-import { AuthService, LoginCredentials } from '@/core/services/auth-service';
+import { LoginCredentials } from '@/core/domain/auth.types';
+import { getBusinessErrorMessage } from '@/core/infrastructure/errors/business-errors';
+import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
+import { StorageService } from '@/core/infrastructure/services/storage';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios-http-client';
+import { routes } from '@/core/presentation/router/routes';
 import { cn } from '@/lib/utils';
 
-const authService = new AuthService();
+const storageService = new StorageService();
+const httpClient = new AxiosHttpClient();
+const authService = new AuthGateway(storageService, httpClient);
 
 export function LoginForm({ className }: React.ComponentProps<'form'>) {
   const [email, setEmail] = useState<string>('admin@sistema.com');
@@ -38,7 +43,7 @@ export function LoginForm({ className }: React.ComponentProps<'form'>) {
       const response = await authService.login(credentials);
 
       if (response.isTwoFactorAuthenticationEnabled) {
-        localStorage.setItem('emailFor2FA', credentials.email);
+        storageService.setItem('emailFor2FA', credentials.email);
         navigate(routes.two_factor_authentication);
       } else {
         navigate(routes.home);
