@@ -18,7 +18,7 @@ export const useUserProfileController = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // --- Instanciação dos Casos de Uso e Repositórios ---
+  // --- Instantiation of Use Cases and Repositories ---
   const authService = useMemo(() => new AuthGateway(storageService, httpClient), []);
   const userRepository = useMemo(() => new UserGateway(storageService, httpClient), []);
   const getUserUseCase = useMemo(() => new GetUserUseCase(userRepository), [userRepository]);
