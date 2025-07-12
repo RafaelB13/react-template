@@ -22,7 +22,7 @@ export const SettingsMenu = () => {
   const authService = new AuthGateway(storageService, httpClient);
   const navigate = useNavigate();
 
-  const data = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || '{}') : {};
+  const data = typeof window !== 'undefined' ? JSON.parse(storageService.getItem('user') || '{}') : {};
 
   const handleLogout = () => {
     setShowAnimation(true);
