@@ -17,7 +17,7 @@ import { Label } from '@/components/ui/label';
 import { routes } from '@/core/presentation/router/routes';
 import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
 import { StorageService } from '@/core/infrastructure/services/storage';
-import { AxiosHttpClient } from '@/core/infrastructure/api/axios-http-client';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios';
 
 export function SignUpForm({ className, ...props }: React.ComponentProps<'form'>) {
   const [name, setName] = useState<string>('');

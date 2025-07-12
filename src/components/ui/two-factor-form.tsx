@@ -16,8 +16,11 @@ import { Label } from '@/components/ui/label';
 import { routes } from '@/core/presentation/router/routes';
 import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
 import { StorageService } from '@/core/infrastructure/services/storage';
-import { AxiosHttpClient } from '@/core/infrastructure/api/axios-http-client';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios';
 import { cn } from '@/lib/utils';
+
+const storageService = new StorageService();
+const httpClient = new AxiosHttpClient();
 
 export function TwoFactorAuthForm({ className, ...props }: React.ComponentProps<'form'>) {
   const [code, setCode] = useState<string>('');

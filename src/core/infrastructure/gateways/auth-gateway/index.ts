@@ -6,13 +6,14 @@ import { LoginCredentials, LoginResponse, RegisterCredentials, RegisterResponse 
 import { IAuthRepository } from '@/core/application/repositories/auth.repository';
 import { IStorageService } from '@/core/application/services/storage.service';
 import { IHttpClient } from '@/core/application/services/http-client.service';
+import { API_ROUTES } from '@/core/infrastructure/api/routes';
 
 export class AuthGateway implements IAuthRepository {
   constructor(private storageService: IStorageService, private httpClient: IHttpClient) {}
 
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
-      const response = await this.httpClient.post<LoginResponse>('/auth/login', credentials);
+      const response = await this.httpClient.post<LoginResponse>(API_ROUTES.auth.login, credentials);
 
       if (response.isTwoFactorAuthenticationEnabled) {
         return response;
@@ -28,7 +29,7 @@ export class AuthGateway implements IAuthRepository {
 
   async register(credentials: RegisterCredentials): Promise<RegisterResponse> {
     try {
-      const response = await this.httpClient.post<RegisterResponse>('/auth/register', credentials);
+      const response = await this.httpClient.post<RegisterResponse>(API_ROUTES.auth.register, credentials);
 
       this.storageService.setItem('accessToken', response.access_token);
       return response;
@@ -39,7 +40,7 @@ export class AuthGateway implements IAuthRepository {
 
   async twoFactorAuthentication(code: string, email: string): Promise<LoginResponse> {
     try {
-      const response = await this.httpClient.post<LoginResponse>('/auth/login/2fa', { code, email });
+      const response = await this.httpClient.post<LoginResponse>(API_ROUTES.auth.twoFactorAuth, { code, email });
 
       this.storageService.setItem('accessToken', response.access_token);
 
@@ -56,7 +57,7 @@ export class AuthGateway implements IAuthRepository {
 
   async requestTwoFactorAuthentication(): Promise<{ message: string }> {
     try {
-      const response = await this.httpClient.post<{ message: string }>('/auth/2fa/enable/request');
+      const response = await this.httpClient.post<{ message: string }>(API_ROUTES.auth.requestTwoFactorAuth);
 
       return response;
     } catch (error: unknown) {
@@ -66,7 +67,7 @@ export class AuthGateway implements IAuthRepository {
 
   async enableTwoFactorAuthentication(token: string): Promise<void> {
     try {
-      await this.httpClient.get<void>(`/auth/2fa/enable?token=${token}`);
+      await this.httpClient.get<void>(API_ROUTES.auth.enableTwoFactorAuth(token));
     } catch (error: unknown) {
       handleServiceError(error, 'Failed to enable two-factor authentication.');
     }
@@ -74,7 +75,7 @@ export class AuthGateway implements IAuthRepository {
 
   async disableTwoFactorAuthentication(): Promise<{ message: string }> {
     try {
-      const response = await this.httpClient.post<{ message: string }>('/auth/2fa/turn-off');
+      const response = await this.httpClient.post<{ message: string }>(API_ROUTES.auth.disableTwoFactorAuth);
 
       return response;
     } catch (error: unknown) {

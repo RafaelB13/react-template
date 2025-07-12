@@ -1,5 +1,5 @@
 import { IHttpClient } from '@/core/application/services/http-client.service';
-import apiInstance from './axios';
+import apiInstance from './instance';
 
 export class AxiosHttpClient implements IHttpClient {
   async get<T>(url: string, config?: any): Promise<T> {

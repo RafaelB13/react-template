@@ -1,5 +1,5 @@
 import { IUpdateUserDTO, IUserResponse } from '@/core/domain/user.types';
-import { IUserRepository } from '../repositories/user.repository';
+import { IUserRepository } from '@/core/application/repositories/user.repository';
 
 export class UpdateUserUseCase {
   constructor(private userRepository: IUserRepository) {}

@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
-import { useLoadingStore } from '../../presentation/stores/use-loading.store';
-import { ApiError, ApiResponse } from './types';
+import { useLoadingStore } from '@/core/presentation/stores/use-loading.store';
+import { ApiError, ApiResponse } from '@/core/infrastructure/api/types';
 import { handleAxiosError } from './utils';
 
 const API_BASE_URL = import.meta.env.API_BASE_URL || 'http://localhost:3000';
@@ -11,7 +11,6 @@ const apiInstance: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
-    Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}`,
   },
   timeout: 10000,
 });
@@ -28,7 +27,7 @@ apiInstance.interceptors.request.use(
   (error) => {
     useLoadingStore.getState().decrementRequestCount();
     return Promise.reject(error);
-  }
+  },
 );
 
 /**
@@ -57,7 +56,7 @@ apiInstance.interceptors.response.use(
     }
 
     return Promise.reject(apiError); // Rejects the Promise with the standardized error
-  }
+  },
 );
 
 export default apiInstance;

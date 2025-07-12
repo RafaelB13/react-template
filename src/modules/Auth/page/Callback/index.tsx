@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { routes } from '@/core/presentation/router/routes';
 import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
 import { StorageService } from '@/core/infrastructure/services/storage';
-import { AxiosHttpClient } from '@/core/infrastructure/api/axios-http-client';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios';
 
 export const AuthCallbackPage = () => {
   const navigate = useNavigate();

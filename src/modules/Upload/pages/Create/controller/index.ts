@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { IUserResponse } from '@/core/domain/user.types';
 import { UserGateway } from '@/core/infrastructure/gateways/user-gateway';
 import { StorageService } from '@/core/infrastructure/services/storage';
-import { AxiosHttpClient } from '@/core/infrastructure/api/axios-http-client';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios';
 
 const storageService = new StorageService();
 const httpClient = new AxiosHttpClient();

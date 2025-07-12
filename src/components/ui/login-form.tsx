@@ -17,7 +17,7 @@ import { LoginCredentials } from '@/core/domain/auth.types';
 import { getBusinessErrorMessage } from '@/core/infrastructure/errors/business-errors';
 import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
 import { StorageService } from '@/core/infrastructure/services/storage';
-import { AxiosHttpClient } from '@/core/infrastructure/api/axios-http-client';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios';
 import { routes } from '@/core/presentation/router/routes';
 import { cn } from '@/lib/utils';
 
