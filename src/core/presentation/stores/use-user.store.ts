@@ -1,5 +1,11 @@
 import { create } from 'zustand';
-import { UserService, IUserResponse } from '@/core/services/user-service';
+import { IUserResponse } from '@/core/domain/user.types';
+import { UserGateway } from '@/core/infrastructure/gateways/user-gateway';
+import { StorageService } from '@/core/infrastructure/services/storage';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios-http-client';
+
+const storageService = new StorageService();
+const httpClient = new AxiosHttpClient();
 
 interface IUserState {
   user: IUserResponse | null;
@@ -17,7 +23,7 @@ export const useUserStore = create<IUserState>((set) => ({
   fetchUser: async () => {
     set({ loading: true, error: null });
     try {
-      const userService = new UserService();
+      const userService = new UserGateway(storageService, httpClient);
       const userData = await userService.getMe();
       set({ user: userData, loading: false });
     } catch (error) {

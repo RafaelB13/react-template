@@ -1,22 +1,34 @@
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { AuthService } from '@/core/services/auth-service';
-import { IUpdateUserDTO, IUserResponse, UserService } from '@/core/services/user-service';
+import { GetUserUseCase } from '@/core/application/use-cases/get-user.use-case';
+import { UpdateUserUseCase } from '@/core/application/use-cases/update-user.use-case';
+import { IUpdateUserDTO, IUserResponse } from '@/core/domain/user.types';
+import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
+import { UserGateway } from '@/core/infrastructure/gateways/user-gateway';
+import { StorageService } from '@/core/infrastructure/services/storage';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios-http-client';
+
+const storageService = new StorageService();
+const httpClient = new AxiosHttpClient();
 
 export const useUserProfileController = () => {
   const [user, setUser] = useState<IUserResponse>();
   const [formData, setFormData] = useState<IUpdateUserDTO>({});
   const [isEditing, setIsEditing] = useState(false);
-
   const [showSuccess, setShowSuccess] = useState(false);
-  const userService = useMemo(() => new UserService(), []);
-  const authService = new AuthService();
+
+  // --- Instantiation of Use Cases and Repositories ---
+  const authService = useMemo(() => new AuthGateway(storageService, httpClient), []);
+  const userRepository = useMemo(() => new UserGateway(storageService, httpClient), []);
+  const getUserUseCase = useMemo(() => new GetUserUseCase(userRepository), [userRepository]);
+  const updateUserUseCase = useMemo(() => new UpdateUserUseCase(userRepository), [userRepository]);
+  // ----------------------------------------------------
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const data = await userService.getUser();
+        const data = await getUserUseCase.execute(); // <-- Usa o Caso de Uso
         setUser(data);
         setFormData(data ? { ...data } : {});
       } catch (error) {
@@ -27,7 +39,7 @@ export const useUserProfileController = () => {
     };
 
     fetchUser();
-  }, [userService]);
+  }, [getUserUseCase]);
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
@@ -37,8 +49,12 @@ export const useUserProfileController = () => {
   };
 
   const handleSaveClick = async () => {
+    if (!user?.id) {
+      toast.error('User ID not found.');
+      return;
+    }
     try {
-      const updatedUser = await userService.updateUser(user?.id || '', formData);
+      const updatedUser = await updateUserUseCase.execute(user.id, formData); // <-- Usa o Caso de Uso
       setUser(updatedUser);
       setIsEditing(false);
       setShowSuccess(true);

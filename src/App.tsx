@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { Toaster } from 'sonner';
 
-import AppRouter from './core/router';
+import AppRouter from './core/presentation/router';
 import { useThemeConfig } from './hooks/use-theme';
-import { useUserStore } from './core/stores/use-user.store';
+import { useUserStore } from './core/presentation/stores/use-user.store';
 import { ThemeProvider } from './components/theme-provider';
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
   useThemeConfig(user?.themeColor);
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark" storageKey="vite-ui-theme" theme={user?.themeMode} enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="dark" storageKey="vite-ui-theme" forcedTheme={user?.themeMode} enableSystem>
       <div className="bg-background text-foreground min-h-screen">
         <AppRouter />
         <Toaster />

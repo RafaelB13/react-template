@@ -1,8 +1,8 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
-import { MainLayout } from '@/core/layout';
-import { routes } from '@/core/router/routes';
+import { MainLayout } from '@/core/presentation/layout';
+import { routes } from '@/core/presentation/router/routes';
 import { AuthCallbackPage } from '@/modules/Auth/page/Callback';
 import LoginPage from '@/modules/Auth/page/Login';
 import SignUpPage from '@/modules/Auth/page/SignIn';
