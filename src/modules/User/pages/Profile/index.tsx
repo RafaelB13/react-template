@@ -169,7 +169,7 @@ export const UserProfilePage = () => {
                   <Switch
                     id="two-factor-auth"
                     checked={!!user?.isTwoFactorAuthenticationEnabled}
-                    onCheckedChange={(checked) => {
+                    onCheckedChange={(checked: boolean) => {
                       if (checked) {
                         setOpenEnable2faDialog(true);
                       } else {

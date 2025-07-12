@@ -1,10 +1,18 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { authService, getUserUseCase, updateUserUseCase } from '@/core/di';
 import { IUpdateUserDTO, IUserResponse } from '@/core/domain/user.types';
+import { useDependency } from '@/core/presentation/hooks/use-dependency.hook';
+import { Token } from '@/core/di/tokens';
+import { GetUserUseCase } from '@/core/application/use-cases/get-user.use-case';
+import { UpdateUserUseCase } from '@/core/application/use-cases/update-user.use-case';
+import { IAuthRepository } from '@/core/application/repositories/auth.repository';
 
 export const useUserProfileController = () => {
+  const getUserUseCase = useDependency<GetUserUseCase>(Token.GetUserUseCase);
+  const updateUserUseCase = useDependency<UpdateUserUseCase>(Token.UpdateUserUseCase);
+  const authService = useDependency<IAuthRepository>(Token.AuthRepository);
+
   const [user, setUser] = useState<IUserResponse>();
   const [formData, setFormData] = useState<IUpdateUserDTO>({});
   const [isEditing, setIsEditing] = useState(false);
@@ -24,7 +32,7 @@ export const useUserProfileController = () => {
     };
 
     fetchUser();
-  }, []);
+  }, [getUserUseCase]);
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);

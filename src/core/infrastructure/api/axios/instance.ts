@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
 import { useLoadingStore } from '@/core/presentation/stores/use-loading.store';
 import { ApiError, ApiResponse } from '@/core/infrastructure/api/types';
-import { handleAxiosError } from './utils';
+import { handleAxiosError } from '@/core/infrastructure/api/axios/utils';
 
 const API_BASE_URL = import.meta.env.API_BASE_URL || 'http://localhost:3000';
 

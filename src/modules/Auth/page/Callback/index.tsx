@@ -2,10 +2,13 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { routes } from '@/core/presentation/router/routes';
-import { authService } from '@/core/di';
+import { useDependency } from '@/core/presentation/hooks/use-dependency.hook';
+import { Token } from '@/core/di/tokens';
+import { IAuthRepository } from '@/core/application/repositories/auth.repository';
 
 export const AuthCallbackPage = () => {
   const navigate = useNavigate();
+  const authService = useDependency<IAuthRepository>(Token.AuthRepository);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -28,7 +31,7 @@ export const AuthCallbackPage = () => {
     } else {
       navigate(routes.login);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

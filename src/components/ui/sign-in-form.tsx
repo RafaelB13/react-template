@@ -17,7 +17,7 @@ import { Label } from '@/components/ui/label';
 import { routes } from '@/core/presentation/router/routes';
 import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
 import { StorageService } from '@/core/infrastructure/services/storage';
-import { AxiosHttpClient } from '@/core/infrastructure/api/axios';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios/http-client';
 
 export function SignUpForm({ className, ...props }: React.ComponentProps<'form'>) {
   const [name, setName] = useState<string>('');
@@ -112,7 +112,7 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'form'>
             type="password"
             required
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
           />
         </div>
         <Button type="submit" className="w-full">

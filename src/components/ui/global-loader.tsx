@@ -1,5 +1,5 @@
 import { useLoadingStore } from '@/core/presentation/stores/use-loading.store';
-import React from 'react';
+import * as React from 'react';
 
 const GlobalLoader: React.FC = () => {
   const isLoading = useLoadingStore((state) => state.isLoading);
