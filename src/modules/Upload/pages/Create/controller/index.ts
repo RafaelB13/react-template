@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { getUserUseCase, uploadFileUseCase } from '@/core/di';
 import { IUserResponse } from '@/core/domain/user.types';
-import { UserGateway } from '@/core/infrastructure/gateways/user-gateway';
-import { StorageService } from '@/core/infrastructure/services/storage';
-import { AxiosHttpClient } from '@/core/infrastructure/api/axios';
-
-const storageService = new StorageService();
-const httpClient = new AxiosHttpClient();
 
 export const useUploadCreateController = () => {
   const [user, setUser] = useState<IUserResponse>();
@@ -16,10 +11,9 @@ export const useUploadCreateController = () => {
   const [uploadSuccess, setUploadSuccess] = useState(false);
 
   useEffect(() => {
-    const userService = new UserGateway(storageService, httpClient);
     const fetchUser = async () => {
       try {
-        const data = await userService.getMe();
+        const data = await getUserUseCase.execute();
         setUser(data);
       } catch {
         toast.error('Failed to fetch user data. Please refresh the page.');
@@ -46,15 +40,8 @@ export const useUploadCreateController = () => {
     formData.append('file', file);
 
     try {
-
-      // await apiInstance.post('/upload', formData, {
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data',
-      //   },
-      // });
-
+      await uploadFileUseCase.execute(formData);
       setUploadSuccess(true);
-
       toast.success('File uploaded successfully!');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to upload file.');
