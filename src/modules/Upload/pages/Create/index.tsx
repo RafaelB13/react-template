@@ -1,17 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useUploadCreateViewModel } from './view-model';
 
 export const UploadCreatePage = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { file, isUploading, uploadSuccess, handleFileSelect, handleUpload } = useUploadCreateViewModel();
+
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
   const [isPasteActive, setIsPasteActive] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      setSelectedFile(event.target.files[0]);
+      handleFileSelect(event.target.files[0]);
     }
   };
 
@@ -31,47 +33,50 @@ export const UploadCreatePage = () => {
 
     const files = event.dataTransfer.files;
     if (files && files[0]) {
-      setSelectedFile(files[0]);
+      handleFileSelect(files[0]);
     }
   };
 
-  const handlePaste = (event: ClipboardEvent) => {
-    event.preventDefault();
+  const handlePaste = useCallback(
+    (event: ClipboardEvent) => {
+      event.preventDefault();
 
-    const clipboardItems = event.clipboardData?.items;
-    if (!clipboardItems) return;
+      const clipboardItems = event.clipboardData?.items;
+      if (!clipboardItems) return;
 
-    for (let i = 0; i < clipboardItems.length; i++) {
-      const item = clipboardItems[i];
+      for (let i = 0; i < clipboardItems.length; i++) {
+        const item = clipboardItems[i];
 
-      // Check if the item is a file
-      if (item.kind === 'file') {
-        const file = item.getAsFile();
-        if (file) {
-          // Check if it's an accepted file type
-          const acceptedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
-          const fileName = file.name || 'pasted-file';
-          const fileExtension = fileName.includes('.') ? '.' + fileName.split('.').pop()?.toLowerCase() : '';
-          const acceptedExtensions = ['.png', '.jpg', '.jpeg', '.pdf'];
+        // Check if the item is a file
+        if (item.kind === 'file') {
+          const pastedFile = item.getAsFile();
+          if (pastedFile) {
+            // Check if it's an accepted file type
+            const acceptedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
+            const fileName = pastedFile.name || 'pasted-file';
+            const fileExtension = fileName.includes('.') ? '.' + fileName.split('.').pop()?.toLowerCase() : '';
+            const acceptedExtensions = ['.png', '.jpg', '.jpeg', '.pdf'];
 
-          if (acceptedTypes.includes(file.type) || acceptedExtensions.includes(fileExtension)) {
-            // Create a new file with a proper name if needed
-            const finalFile = file.name
-              ? file
-              : new File([file], `pasted-image-${Date.now()}.png`, { type: file.type });
+            if (acceptedTypes.includes(pastedFile.type) || acceptedExtensions.includes(fileExtension)) {
+              // Create a new file with a proper name if needed
+              const finalFile = pastedFile.name
+                ? pastedFile
+                : new File([pastedFile], `pasted-image-${Date.now()}.png`, { type: pastedFile.type });
 
-            setIsPasteActive(true);
-            setSelectedFile(finalFile);
+              setIsPasteActive(true);
+              handleFileSelect(finalFile);
 
-            // Reset paste visual feedback after a short delay
-            setTimeout(() => setIsPasteActive(false), 1000);
+              // Reset paste visual feedback after a short delay
+              setTimeout(() => setIsPasteActive(false), 1000);
 
-            break; // Take only the first valid file
+              break; // Take only the first valid file
+            }
           }
         }
       }
-    }
-  };
+    },
+    [handleFileSelect]
+  );
 
   const handleAreaClick = (event: React.MouseEvent) => {
     event.preventDefault();
@@ -81,12 +86,12 @@ export const UploadCreatePage = () => {
     }
   };
 
-  const clearFile = () => {
-    setSelectedFile(null);
+  const clearFile = useCallback(() => {
+    handleFileSelect(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-  };
+  }, [handleFileSelect, fileInputRef]);
 
   const isImageFile = (file: File) => {
     return file.type.startsWith('image/');
@@ -101,13 +106,16 @@ export const UploadCreatePage = () => {
 
   // Cleanup object URLs to prevent memory leaks
   useEffect(() => {
+    let objectUrl: string | null = null;
+    if (file && isImageFile(file)) {
+      objectUrl = URL.createObjectURL(file);
+    }
     return () => {
-      if (selectedFile && isImageFile(selectedFile)) {
-        const preview = URL.createObjectURL(selectedFile);
-        URL.revokeObjectURL(preview);
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
       }
     };
-  }, [selectedFile]);
+  }, [file]);
 
   // Add paste event listener
   useEffect(() => {
@@ -130,7 +138,13 @@ export const UploadCreatePage = () => {
     return () => {
       document.removeEventListener('paste', handlePasteEvent);
     };
-  }, []);
+  }, [handlePaste]);
+
+  useEffect(() => {
+    if (uploadSuccess) {
+      clearFile();
+    }
+  }, [uploadSuccess, clearFile]);
 
   return (
     <div className="bg-background flex h-screen flex-col p-6">
@@ -168,23 +182,21 @@ export const UploadCreatePage = () => {
                       strokeLinejoin="round"
                     />
                   </svg>
-                  {selectedFile ? (
+                  {file ? (
                     <div className="space-y-4">
-                      {isImageFile(selectedFile) && (
+                      {isImageFile(file) && (
                         <div className="mx-auto max-w-40">
                           <img
-                            src={getFilePreview(selectedFile) || ''}
+                            src={getFilePreview(file) || ''}
                             alt="Preview"
                             className="max-h-32 w-full rounded-lg object-cover"
                           />
                         </div>
                       )}
                       <div>
-                        <p className="text-foreground text-sm font-medium">{selectedFile.name}</p>
-                        <p className="text-muted-foreground text-xs">
-                          {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                        </p>
-                        <p className="text-muted-foreground text-xs">Type: {selectedFile.type || 'Unknown'}</p>
+                        <p className="text-foreground text-sm font-medium">{file.name}</p>
+                        <p className="text-muted-foreground text-xs">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                        <p className="text-muted-foreground text-xs">Type: {file.type || 'Unknown'}</p>
                       </div>
                     </div>
                   ) : (
@@ -201,7 +213,7 @@ export const UploadCreatePage = () => {
                   ref={fileInputRef}
                   id="file-upload"
                   type="file"
-                  onChange={handleFileSelect}
+                  onChange={handleFileInputChange}
                   accept=".png,.jpg,.jpeg,.pdf"
                   className="hidden"
                 />
@@ -210,10 +222,14 @@ export const UploadCreatePage = () => {
                 </Button>
               </div>
 
-              {selectedFile && <Button className="w-full">Upload to S3</Button>}
+              {file && (
+                <Button className="w-full" onClick={handleUpload} disabled={isUploading}>
+                  {isUploading ? 'Uploading...' : 'Upload to S3'}
+                </Button>
+              )}
 
-              {selectedFile && (
-                <Button variant="outline" className="w-full" onClick={clearFile}>
+              {file && (
+                <Button variant="outline" className="w-full" onClick={clearFile} disabled={isUploading}>
                   Clear Selection
                 </Button>
               )}

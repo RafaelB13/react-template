@@ -1,15 +1,17 @@
-
-
-import { handleServiceError } from '@/core/infrastructure/errors/handle-error';
-
-import { LoginCredentials, LoginResponse, RegisterCredentials, RegisterResponse } from '@/core/domain/auth.types';
 import { IAuthRepository } from '@/core/application/repositories/auth.repository';
-import { IStorageService } from '@/core/application/services/storage.service';
 import { IHttpClient } from '@/core/application/services/http-client.service';
+import { IStorageService } from '@/core/application/services/storage.service';
+import { LoginCredentials, LoginResponse, RegisterCredentials, RegisterResponse } from '@/core/domain/auth.types';
 import { API_ROUTES } from '@/core/infrastructure/api/routes';
+import { handleApiError } from '@/core/infrastructure/errors/handle-error';
+import { UserGateway } from '@/core/infrastructure/gateways/user-gateway';
 
 export class AuthGateway implements IAuthRepository {
-  constructor(private storageService: IStorageService, private httpClient: IHttpClient) {}
+  constructor(
+    private storageService: IStorageService,
+    private httpClient: IHttpClient,
+    private userGateway: UserGateway,
+  ) {}
 
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
@@ -20,10 +22,11 @@ export class AuthGateway implements IAuthRepository {
       }
 
       this.storageService.setItem('accessToken', response.access_token);
+      await this.userGateway.getMe();
 
       return response;
     } catch (error: unknown) {
-      handleServiceError(error, 'Login failed');
+      handleApiError(error, 'Login failed');
     }
   }
 
@@ -34,7 +37,7 @@ export class AuthGateway implements IAuthRepository {
       this.storageService.setItem('accessToken', response.access_token);
       return response;
     } catch (error: unknown) {
-      handleServiceError(error, 'Registration failed');
+      handleApiError(error, 'Registration failed');
     }
   }
 
@@ -43,10 +46,11 @@ export class AuthGateway implements IAuthRepository {
       const response = await this.httpClient.post<LoginResponse>(API_ROUTES.auth.twoFactorAuth, { code, email });
 
       this.storageService.setItem('accessToken', response.access_token);
+      await this.userGateway.getMe();
 
       return response;
     } catch (error: unknown) {
-      handleServiceError(error, 'Two-factor authentication failed');
+      handleApiError(error, 'Two-factor authentication failed');
     }
   }
 
@@ -61,7 +65,7 @@ export class AuthGateway implements IAuthRepository {
 
       return response;
     } catch (error: unknown) {
-      handleServiceError(error, 'Failed to request two-factor authentication.');
+      handleApiError(error, 'Failed to request two-factor authentication.');
     }
   }
 
@@ -69,7 +73,7 @@ export class AuthGateway implements IAuthRepository {
     try {
       await this.httpClient.get<void>(API_ROUTES.auth.enableTwoFactorAuth(token));
     } catch (error: unknown) {
-      handleServiceError(error, 'Failed to enable two-factor authentication.');
+      handleApiError(error, 'Failed to enable two-factor authentication.');
     }
   }
 
@@ -79,7 +83,7 @@ export class AuthGateway implements IAuthRepository {
 
       return response;
     } catch (error: unknown) {
-      handleServiceError(error, 'Failed to disable two-factor authentication.');
+      handleApiError(error, 'Failed to disable two-factor authentication.');
     }
   }
 }

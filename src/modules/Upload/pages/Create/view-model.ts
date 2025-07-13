@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { IUserResponse } from '@/core/domain/user.types';
-import { useDependency } from '@/core/presentation/hooks/use-dependency.hook';
-import { Token } from '@/core/di/tokens';
 import { GetUserUseCase } from '@/core/application/use-cases/get-user.use-case';
 import { UploadFileUseCase } from '@/core/application/use-cases/upload-file.use-case';
+import { Token } from '@/core/di/tokens';
+import { IUserResponse } from '@/core/domain/user.types';
+import { useDependency } from '@/core/presentation/hooks/use-dependency.hook';
 
-export const useUploadCreateController = () => {
+export const useUploadCreateViewModel = () => {
   const getUserUseCase = useDependency<GetUserUseCase>(Token.GetUserUseCase);
   const uploadFileUseCase = useDependency<UploadFileUseCase>(Token.UploadFileUseCase);
 

@@ -1,25 +1,12 @@
-import { useEffect, useState } from 'react';
 import { GalleryVerticalEnd } from 'lucide-react';
 
 import { SignUpForm } from '@/components/ui/sign-in-form';
 import UploadBg from '@/assets/upload-login-logo.png';
+import { useFetchUserIP } from '@/core/presentation/hooks/fetch-user-ip.hook';
 
 export default function SignUpPage() {
-  const [userIP, setUserIP] = useState<string | null>(null);
+  const { isUserIPLoading, userIP, userIpFetchError } = useFetchUserIP();
 
-  useEffect(() => {
-    const fetchUserIP = async () => {
-      try {
-        const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        setUserIP(data.ip);
-      } catch (error) {
-        throw new Error(`Error fetching user IP: ${error}`);
-      }
-    };
-
-    fetchUserIP();
-  });
   return (
     <div className="fixed inset-0 grid min-h-screen overflow-hidden lg:grid-cols-2">
       <div className="flex min-h-screen flex-col gap-4 p-6 md:p-10">
@@ -28,7 +15,10 @@ export default function SignUpPage() {
             <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
               <GalleryVerticalEnd className="size-4" />
             </div>
-            Hi <span className="text-muted-foreground">{userIP}</span>
+            Hi{' '}
+            <span className="text-muted-foreground">
+              {isUserIPLoading ? 'Loading...' : userIP?.ip || userIpFetchError || 'Guest'}
+            </span>
           </a>
         </div>
         <div className="flex flex-1 items-center justify-center">

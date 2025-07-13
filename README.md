@@ -34,6 +34,7 @@ Make sure you have [Bun](https://bun.sh/) installed on your system.
 ### Installation
 
 1.  Clone the repository:
+
     ```bash
     git clone https://your-repository-url.git
     cd upload-to-s3
@@ -75,4 +76,3 @@ In the project directory, you can run:
 - `bun run lint`: Lints the code and fixes issues.
 - `bun run format`: Formats the code with Prettier.
 - `bun run preview`: Serves the production build locally.
-

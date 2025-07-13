@@ -1,22 +1,37 @@
-import { routes } from '@/core/presentation/router/routes';
-import { motion } from 'framer-motion';
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
+import { routes } from '@/core/presentation/router/routes';
+
 const NotFoundPage: React.FC = () => (
-  <div className="flex min-h-screen flex-col items-center justify-center bg-background relative overflow-hidden">
+  <div className="bg-background relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
     {/* Fundo estrelado animado */}
     <div className="absolute inset-0 z-0">
-      <svg width="100%" height="100%" viewBox="0 0 1440 800" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 1440 800"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-full w-full"
+      >
         {/* Estrelas */}
         {[...Array(40)].map((_, i) => (
-          <circle key={i} cx={Math.random() * 1440} cy={Math.random() * 800} r={Math.random() * 1.5 + 0.5} fill="#fff" opacity={Math.random() * 0.7 + 0.3} />
+          <circle
+            key={i}
+            cx={Math.random() * 1440}
+            cy={Math.random() * 800}
+            r={Math.random() * 1.5 + 0.5}
+            fill="#fff"
+            opacity={Math.random() * 0.7 + 0.3}
+          />
         ))}
       </svg>
     </div>
     {/* Planeta principal (com crateras) */}
     <motion.div
-      className="absolute left-1/4 top-1/4 z-10"
+      className="absolute top-1/4 left-1/4 z-10"
       animate={{ y: [0, 20, 0] }}
       transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
     >
@@ -49,14 +64,24 @@ const NotFoundPage: React.FC = () => (
         </defs>
         <ellipse cx="40" cy="40" rx="28" ry="24" fill="url(#planet2)" />
         {/* Anel */}
-        <ellipse cx="40" cy="45" rx="36" ry="8" fill="none" stroke="#f472b6" strokeWidth="3" opacity="0.5" transform="rotate(-15 40 45)" />
+        <ellipse
+          cx="40"
+          cy="45"
+          rx="36"
+          ry="8"
+          fill="none"
+          stroke="#f472b6"
+          strokeWidth="3"
+          opacity="0.5"
+          transform="rotate(-15 40 45)"
+        />
         {/* Cratera */}
         <ellipse cx="55" cy="50" rx="5" ry="2" fill="#fde68a" opacity="0.5" />
       </svg>
     </motion.div>
     {/* Pequeno planeta azul */}
     <motion.div
-      className="absolute left-[60%] top-[70%] z-10"
+      className="absolute top-[70%] left-[60%] z-10"
       animate={{ x: [0, 10, 0], y: [0, -10, 0] }}
       transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
     >
@@ -73,7 +98,7 @@ const NotFoundPage: React.FC = () => (
     </motion.div>
     {/* Novo planeta vermelho */}
     <motion.div
-      className="absolute left-[15%] bottom-[15%] z-10"
+      className="absolute bottom-[15%] left-[15%] z-10"
       animate={{ x: [0, -8, 0], y: [0, 8, 0] }}
       transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
     >
@@ -90,7 +115,7 @@ const NotFoundPage: React.FC = () => (
     </motion.div>
     {/* Novo planeta verde */}
     <motion.div
-      className="absolute right-[10%] top-[10%] z-10"
+      className="absolute top-[10%] right-[10%] z-10"
       animate={{ x: [0, 12, 0], y: [0, -12, 0] }}
       transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
     >
@@ -107,12 +132,19 @@ const NotFoundPage: React.FC = () => (
     </motion.div>
     {/* Conteúdo principal */}
     <div className="relative z-20 flex flex-col items-center">
-      <h1 className="text-7xl font-extrabold text-foreground mb-2 tracking-tight animate-fade-in drop-shadow-lg">404</h1>
-      <p className="text-lg text-muted-foreground mb-8 text-center max-w-md animate-fade-in delay-200">
-        You seem lost in space.<br />
-        This page was not found in this universe.<br />
+      <h1 className="text-foreground animate-fade-in mb-2 text-7xl font-extrabold tracking-tight drop-shadow-lg">
+        404
+      </h1>
+      <p className="text-muted-foreground animate-fade-in mb-8 max-w-md text-center text-lg delay-200">
+        You seem lost in space.
+        <br />
+        This page was not found in this universe.
+        <br />
       </p>
-      <Link to={routes.home} className="px-7 py-2 rounded-lg bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-pink-500 text-background font-semibold shadow-lg hover:scale-105 transition-transform animate-fade-in delay-300">
+      <Link
+        to={routes.home}
+        className="text-background animate-fade-in rounded-lg bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-pink-500 px-7 py-2 font-semibold shadow-lg transition-transform delay-300 hover:scale-105"
+      >
         Back to Home
       </Link>
     </div>

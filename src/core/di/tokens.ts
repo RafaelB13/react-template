@@ -17,4 +17,7 @@ export const Token = {
   GetUserUseCase: Symbol.for('GetUserUseCase'),
   UpdateUserUseCase: Symbol.for('UpdateUserUseCase'),
   UploadFileUseCase: Symbol.for('UploadFileUseCase'),
+  EnableTwoFactorAuthenticationUseCase: Symbol.for('EnableTwoFactorAuthenticationUseCase'),
+  RequestTwoFactorAuthenticationUseCase: Symbol.for('RequestTwoFactorAuthenticationUseCase'),
+  DisableTwoFactorAuthenticationUseCase: Symbol.for('DisableTwoFactorAuthenticationUseCase'),
 };

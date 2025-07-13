@@ -1,6 +1,6 @@
 import { BusinessError } from '@/core/infrastructure/errors/business-errors';
 
-export function handleServiceError(error: unknown, defaultMessage: string): never {
+export function handleApiError(error: unknown, defaultMessage: string): never {
   if (error instanceof BusinessError) {
     throw error;
   }
@@ -22,4 +22,3 @@ export function handleServiceError(error: unknown, defaultMessage: string): neve
 
   throw new BusinessError(message);
 }
-

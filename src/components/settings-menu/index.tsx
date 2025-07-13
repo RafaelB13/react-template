@@ -1,17 +1,17 @@
-import { Cog, LogOut, User } from 'lucide-react';
 import { useState } from 'react';
+import { Cog, LogOut, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { SuccessAnimation } from '@/components/success-animation';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { routes } from '@/core/presentation/router/routes';
+import { SuccessAnimation } from '@/components/success-animation';
+import { ThemeCustomizer } from '@/components/theme-customizer';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios/http-client';
 import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
 import { StorageService } from '@/core/infrastructure/services/storage';
-import { AxiosHttpClient } from '@/core/infrastructure/api/axios/http-client';
+import { routes } from '@/core/presentation/router/routes';
 import { useSettingsMenuStore } from '@/stores/use-settings-menu.store';
-import { ThemeCustomizer } from '@/components/theme-customizer';
 
 const storageService = new StorageService();
 const httpClient = new AxiosHttpClient();
@@ -38,9 +38,7 @@ export const SettingsMenu = () => {
       <PopoverTrigger asChild>
         <div className="flex cursor-pointer items-center gap-2">
           <div className="flex flex-col items-end justify-center">
-            {data?.name && (
-              <span className="text-foreground text-base font-medium">{data.name}</span>
-            )}
+            {data?.name && <span className="text-foreground text-base font-medium">{data.name}</span>}
             {data?.email && data?.name && (
               <span className="text-muted-foreground max-w-[140px] truncate text-xs">{data.email}</span>
             )}
@@ -59,7 +57,7 @@ export const SettingsMenu = () => {
           <TabsContent value="account">
             <div className="grid gap-4">
               <div className="space-y-2">
-                <h4 className="font-medium leading-none">Settings</h4>
+                <h4 className="leading-none font-medium">Settings</h4>
                 <p className="text-muted-foreground text-sm">Manage your account settings.</p>
               </div>
               <div className="grid gap-2">
