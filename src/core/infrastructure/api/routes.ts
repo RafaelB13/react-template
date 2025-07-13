@@ -11,4 +11,7 @@ export const API_ROUTES = {
     getMe: '/users/me',
     update: (id: string) => `/users/${id}`,
   },
+  upload: {
+    create: '/upload',
+  },
 };

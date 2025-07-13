@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { routes } from '@/core/presentation/router/routes';
 import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
 import { StorageService } from '@/core/infrastructure/services/storage';
-import { AxiosHttpClient } from '@/core/infrastructure/api/axios';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios/http-client';
 import { useSettingsMenuStore } from '@/stores/use-settings-menu.store';
 import { ThemeCustomizer } from '@/components/theme-customizer';
 

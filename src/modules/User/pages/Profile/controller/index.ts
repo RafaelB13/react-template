@@ -1,34 +1,27 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { IUpdateUserDTO, IUserResponse } from '@/core/domain/user.types';
+import { useDependency } from '@/core/presentation/hooks/use-dependency.hook';
+import { Token } from '@/core/di/tokens';
 import { GetUserUseCase } from '@/core/application/use-cases/get-user.use-case';
 import { UpdateUserUseCase } from '@/core/application/use-cases/update-user.use-case';
-import { IUpdateUserDTO, IUserResponse } from '@/core/domain/user.types';
-import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
-import { UserGateway } from '@/core/infrastructure/gateways/user-gateway';
-import { StorageService } from '@/core/infrastructure/services/storage';
-import { AxiosHttpClient } from '@/core/infrastructure/api/axios';
-
-const storageService = new StorageService();
-const httpClient = new AxiosHttpClient();
+import { IAuthRepository } from '@/core/application/repositories/auth.repository';
 
 export const useUserProfileController = () => {
+  const getUserUseCase = useDependency<GetUserUseCase>(Token.GetUserUseCase);
+  const updateUserUseCase = useDependency<UpdateUserUseCase>(Token.UpdateUserUseCase);
+  const authService = useDependency<IAuthRepository>(Token.AuthRepository);
+
   const [user, setUser] = useState<IUserResponse>();
   const [formData, setFormData] = useState<IUpdateUserDTO>({});
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // --- Instantiation of Use Cases and Repositories ---
-  const authService = useMemo(() => new AuthGateway(storageService, httpClient), []);
-  const userRepository = useMemo(() => new UserGateway(storageService, httpClient), []);
-  const getUserUseCase = useMemo(() => new GetUserUseCase(userRepository), [userRepository]);
-  const updateUserUseCase = useMemo(() => new UpdateUserUseCase(userRepository), [userRepository]);
-  // ----------------------------------------------------
-
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const data = await getUserUseCase.execute(); // <-- Usa o Caso de Uso
+        const data = await getUserUseCase.execute(); // <-- Use Case from DI
         setUser(data);
         setFormData(data ? { ...data } : {});
       } catch (error) {

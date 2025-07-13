@@ -17,7 +17,7 @@ import { LoginCredentials } from '@/core/domain/auth.types';
 import { getBusinessErrorMessage } from '@/core/infrastructure/errors/business-errors';
 import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
 import { StorageService } from '@/core/infrastructure/services/storage';
-import { AxiosHttpClient } from '@/core/infrastructure/api/axios';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios/http-client';
 import { routes } from '@/core/presentation/router/routes';
 import { cn } from '@/lib/utils';
 
@@ -92,7 +92,7 @@ export function LoginForm({ className }: React.ComponentProps<'form'>) {
             type="password"
             required
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
           />
         </div>
         <Button type="button" className="w-full" onClick={handleLogin}>
