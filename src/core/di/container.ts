@@ -57,18 +57,35 @@ container.register(Token.HttpClient, () => new AxiosHttpClient());
 // --- Gateways / Repositories ---
 container.register(
   Token.AuthGateway,
-  (c) => new AuthGateway(c.resolve(Token.StorageService), c.resolve(Token.HttpClient))
+  (c) =>
+    new AuthGateway(
+      c.resolve(Token.StorageService),
+      c.resolve(Token.HttpClient),
+      c.resolve(Token.UserGateway),
+    )
 );
 container.register(
   Token.UserGateway,
-  (c) => new UserGateway(c.resolve(Token.StorageService), c.resolve(Token.HttpClient))
+  (c) => new UserGateway(
+    c.resolve(Token.StorageService),
+    c.resolve(Token.HttpClient)
+  )
 );
-container.register(Token.UploadGateway, (c) => new UploadGateway(c.resolve(Token.HttpClient)));
+container.register(
+  Token.UploadGateway, (c) => new UploadGateway(
+    c.resolve(Token.HttpClient)
+  )
+);
 
 // --- Repositories ---
 container.register(
   Token.AuthRepository,
-  (c) => new AuthGateway(c.resolve(Token.StorageService), c.resolve(Token.HttpClient))
+  (c) =>
+    new AuthGateway(
+      c.resolve(Token.StorageService),
+      c.resolve(Token.HttpClient),
+      c.resolve(Token.UserGateway),
+    )
 );
 container.register(
   Token.UserRepository,

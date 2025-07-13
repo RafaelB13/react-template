@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, {ComponentProps, useEffect, useState} from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { cn } from '@/lib/utils';
 import {
@@ -15,14 +15,29 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { routes } from '@/core/presentation/router/routes';
-import { useLoginFormViewModel } from './view-model';
+import { useLoginFormStore } from '@/modules/Auth/components/login-form/store';
+import { LoginFormViewModel } from '@/modules/Auth/components/login-form/view-model';
 
-export function LoginForm({ className }: React.ComponentProps<'form'>) {
-  const { email, setEmail, password, setPassword, errorMessage, showErrorDialog, setShowErrorDialog, handleLogin } =
-    useLoginFormViewModel();
+export function LoginForm({ className }: ComponentProps<'form'>) {
+  const navigate = useNavigate();
+  const { email, password, errorMessage, showErrorDialog, setEmail, setPassword, setShowErrorDialog } =
+    useLoginFormStore();
+  const [viewModel] = useState(() => new LoginFormViewModel());
+
+  useEffect(() => {
+    const { reset } = useLoginFormStore.getState();
+    return () => {
+      reset();
+    };
+  }, []);
+
+  const onLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    viewModel.handleLogin(navigate);
+  };
 
   return (
-    <form className={cn('flex flex-col gap-6', className)} onSubmit={(e) => e.preventDefault()}>
+    <form className={cn('flex flex-col gap-6', className)} onSubmit={e => e.preventDefault()}>
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Login to your account</h1>
         <p className="text-muted-foreground text-sm text-balance">Enter your email below to login to your account</p>
@@ -36,7 +51,7 @@ export function LoginForm({ className }: React.ComponentProps<'form'>) {
             placeholder="admin@sistema.com"
             required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={e => setEmail(e.target.value)}
           />
         </div>
         <div className="grid gap-3">
@@ -54,7 +69,7 @@ export function LoginForm({ className }: React.ComponentProps<'form'>) {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
           />
         </div>
-        <Button type="button" className="w-full" onClick={handleLogin}>
+        <Button type="button" className="w-full" onClick={onLogin}>
           Login
         </Button>
         <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">

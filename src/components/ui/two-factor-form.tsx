@@ -14,13 +14,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { AxiosHttpClient } from '@/core/infrastructure/api/axios/http-client';
+import { container, Token } from '@/core/di';
 import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
 import { StorageService } from '@/core/infrastructure/services/storage';
 import { routes } from '@/core/presentation/router/routes';
 
 const storageService = new StorageService();
-const httpClient = new AxiosHttpClient();
 
 export function TwoFactorAuthForm({ className, ...props }: React.ComponentProps<'form'>) {
   const [code, setCode] = useState<string>('');
@@ -36,7 +35,7 @@ export function TwoFactorAuthForm({ className, ...props }: React.ComponentProps<
       }
 
       try {
-        const loginService = new AuthGateway(storageService, httpClient);
+        const loginService = container.resolve<AuthGateway>(Token.AuthGateway);
         const result = await loginService.twoFactorAuthentication(code, storageService.getItem('emailFor2FA') || '');
 
         if (result.access_token) {

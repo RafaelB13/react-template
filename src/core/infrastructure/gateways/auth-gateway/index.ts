@@ -4,11 +4,13 @@ import { IStorageService } from '@/core/application/services/storage.service';
 import { LoginCredentials, LoginResponse, RegisterCredentials, RegisterResponse } from '@/core/domain/auth.types';
 import { API_ROUTES } from '@/core/infrastructure/api/routes';
 import { handleApiError } from '@/core/infrastructure/errors/handle-error';
+import { UserGateway } from '@/core/infrastructure/gateways/user-gateway';
 
 export class AuthGateway implements IAuthRepository {
   constructor(
     private storageService: IStorageService,
-    private httpClient: IHttpClient
+    private httpClient: IHttpClient,
+    private userGateway: UserGateway,
   ) {}
 
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
@@ -20,6 +22,7 @@ export class AuthGateway implements IAuthRepository {
       }
 
       this.storageService.setItem('accessToken', response.access_token);
+      await this.userGateway.getMe();
 
       return response;
     } catch (error: unknown) {
@@ -43,6 +46,7 @@ export class AuthGateway implements IAuthRepository {
       const response = await this.httpClient.post<LoginResponse>(API_ROUTES.auth.twoFactorAuth, { code, email });
 
       this.storageService.setItem('accessToken', response.access_token);
+      await this.userGateway.getMe();
 
       return response;
     } catch (error: unknown) {
