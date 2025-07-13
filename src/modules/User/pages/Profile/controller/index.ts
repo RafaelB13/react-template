@@ -1,22 +1,27 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { AuthService } from '@/core/services/auth-service';
-import { IUpdateUserDTO, IUserResponse, UserService } from '@/core/services/user-service';
+import { IUpdateUserDTO, IUserResponse } from '@/core/domain/user.types';
+import { useDependency } from '@/core/presentation/hooks/use-dependency.hook';
+import { Token } from '@/core/di/tokens';
+import { GetUserUseCase } from '@/core/application/use-cases/get-user.use-case';
+import { UpdateUserUseCase } from '@/core/application/use-cases/update-user.use-case';
+import { IAuthRepository } from '@/core/application/repositories/auth.repository';
 
 export const useUserProfileController = () => {
+  const getUserUseCase = useDependency<GetUserUseCase>(Token.GetUserUseCase);
+  const updateUserUseCase = useDependency<UpdateUserUseCase>(Token.UpdateUserUseCase);
+  const authService = useDependency<IAuthRepository>(Token.AuthRepository);
+
   const [user, setUser] = useState<IUserResponse>();
   const [formData, setFormData] = useState<IUpdateUserDTO>({});
   const [isEditing, setIsEditing] = useState(false);
-
   const [showSuccess, setShowSuccess] = useState(false);
-  const userService = useMemo(() => new UserService(), []);
-  const authService = new AuthService();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const data = await userService.getUser();
+        const data = await getUserUseCase.execute(); // <-- Use Case from DI
         setUser(data);
         setFormData(data ? { ...data } : {});
       } catch (error) {
@@ -27,7 +32,7 @@ export const useUserProfileController = () => {
     };
 
     fetchUser();
-  }, [userService]);
+  }, [getUserUseCase]);
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
@@ -37,8 +42,12 @@ export const useUserProfileController = () => {
   };
 
   const handleSaveClick = async () => {
+    if (!user?.id) {
+      toast.error('User ID not found.');
+      return;
+    }
     try {
-      const updatedUser = await userService.updateUser(user?.id || '', formData);
+      const updatedUser = await updateUserUseCase.execute(user.id, formData); // <-- Usa o Caso de Uso
       setUser(updatedUser);
       setIsEditing(false);
       setShowSuccess(true);

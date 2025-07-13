@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useUserProfileController } from './controller';
+import { useUserProfileController } from '@/modules/User/pages/Profile/controller';
 
 export const UserProfilePage = () => {
   const {
@@ -169,7 +169,7 @@ export const UserProfilePage = () => {
                   <Switch
                     id="two-factor-auth"
                     checked={!!user?.isTwoFactorAuthenticationEnabled}
-                    onCheckedChange={(checked) => {
+                    onCheckedChange={(checked: boolean) => {
                       if (checked) {
                         setOpenEnable2faDialog(true);
                       } else {

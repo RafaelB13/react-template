@@ -1,4 +1,4 @@
-import { BusinessError } from './business-errors';
+import { BusinessError } from '@/core/infrastructure/errors/business-errors';
 
 export function handleServiceError(error: unknown, defaultMessage: string): never {
   if (error instanceof BusinessError) {

@@ -1,19 +1,25 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { IUserResponse, UserService } from '@/core/services/user-service';
+import { IUserResponse } from '@/core/domain/user.types';
+import { useDependency } from '@/core/presentation/hooks/use-dependency.hook';
+import { Token } from '@/core/di/tokens';
+import { GetUserUseCase } from '@/core/application/use-cases/get-user.use-case';
+import { UploadFileUseCase } from '@/core/application/use-cases/upload-file.use-case';
 
 export const useUploadCreateController = () => {
+  const getUserUseCase = useDependency<GetUserUseCase>(Token.GetUserUseCase);
+  const uploadFileUseCase = useDependency<UploadFileUseCase>(Token.UploadFileUseCase);
+
   const [user, setUser] = useState<IUserResponse>();
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
 
   useEffect(() => {
-    const userService = new UserService();
     const fetchUser = async () => {
       try {
-        const data = await userService.getMe();
+        const data = await getUserUseCase.execute();
         setUser(data);
       } catch {
         toast.error('Failed to fetch user data. Please refresh the page.');
@@ -21,7 +27,7 @@ export const useUploadCreateController = () => {
     };
 
     fetchUser();
-  }, []);
+  }, [getUserUseCase]);
 
   const handleFileSelect = (selectedFile: File | null) => {
     setFile(selectedFile);
@@ -40,15 +46,8 @@ export const useUploadCreateController = () => {
     formData.append('file', file);
 
     try {
-
-      // await apiInstance.post('/upload', formData, {
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data',
-      //   },
-      // });
-
+      await uploadFileUseCase.execute(formData);
       setUploadSuccess(true);
-
       toast.success('File uploaded successfully!');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to upload file.');

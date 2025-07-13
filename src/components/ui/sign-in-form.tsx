@@ -14,8 +14,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { routes } from '@/core/router/routes';
-import { AuthService } from '@/core/services/auth-service';
+import { routes } from '@/core/presentation/router/routes';
+import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
+import { StorageService } from '@/core/infrastructure/services/storage';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios/http-client';
 
 export function SignUpForm({ className, ...props }: React.ComponentProps<'form'>) {
   const [name, setName] = useState<string>('');
@@ -41,7 +43,9 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'form'>
           throw new Error('Please fill in all fields');
         }
 
-        const signUpService = new AuthService();
+        const storageService = new StorageService();
+        const httpClient = new AxiosHttpClient();
+        const signUpService = new AuthGateway(storageService, httpClient);
 
         await signUpService.register({
           name,
@@ -108,7 +112,7 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'form'>
             type="password"
             required
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
           />
         </div>
         <Button type="submit" className="w-full">

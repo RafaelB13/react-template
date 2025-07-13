@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 
 import { buttonVariants } from '@/components/ui/button-variants';
-import { routes } from '@/core/router/routes';
+import { routes } from '@/core/presentation/router/routes';
 import { cn } from '@/lib/utils';
 
 const menuItems = [

@@ -13,9 +13,14 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { routes } from '@/core/router/routes';
-import { AuthService } from '@/core/services/auth-service';
+import { routes } from '@/core/presentation/router/routes';
+import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
+import { StorageService } from '@/core/infrastructure/services/storage';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios/http-client';
 import { cn } from '@/lib/utils';
+
+const storageService = new StorageService();
+const httpClient = new AxiosHttpClient();
 
 export function TwoFactorAuthForm({ className, ...props }: React.ComponentProps<'form'>) {
   const [code, setCode] = useState<string>('');
@@ -31,8 +36,8 @@ export function TwoFactorAuthForm({ className, ...props }: React.ComponentProps<
       }
 
       try {
-        const loginService = new AuthService();
-        const result = await loginService.twoFactorAuthentication(code, localStorage.getItem('emailFor2FA') || '');
+        const loginService = new AuthGateway(storageService, httpClient);
+        const result = await loginService.twoFactorAuthentication(code, storageService.getItem('emailFor2FA') || '');
 
         if (result.access_token) {
           navigate(routes.home);
@@ -64,7 +69,7 @@ export function TwoFactorAuthForm({ className, ...props }: React.ComponentProps<
             placeholder="XXXXXX"
             required
             value={code}
-            onChange={(e) => setCode(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCode(e.target.value)}
           />
         </div>
         <Button type="submit" className="w-full">

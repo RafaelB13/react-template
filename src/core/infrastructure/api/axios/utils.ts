@@ -2,7 +2,7 @@
 // src/api/utils.ts
 import { AxiosError } from 'axios';
 
-import { ApiError } from './types';
+import { ApiError } from '@/core/infrastructure/api/types';
 
 /**
  * Normalizes and extracts information from an Axios error.

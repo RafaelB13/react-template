@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { useGetUserIPStore } from '../stores/get-user-ip.store';
+import { useGetUserIPStore } from '@/core/presentation/stores/get-user-ip.store';
 
 export const useFetchUserIP = () => {
   const fetchUserIp = useGetUserIPStore((state) => state.fetchUserIP);
