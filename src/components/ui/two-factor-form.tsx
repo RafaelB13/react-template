@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { cn } from '@/lib/utils';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,11 +14,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { routes } from '@/core/presentation/router/routes';
+import { AxiosHttpClient } from '@/core/infrastructure/api/axios/http-client';
 import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
 import { StorageService } from '@/core/infrastructure/services/storage';
-import { AxiosHttpClient } from '@/core/infrastructure/api/axios/http-client';
-import { cn } from '@/lib/utils';
+import { routes } from '@/core/presentation/router/routes';
 
 const storageService = new StorageService();
 const httpClient = new AxiosHttpClient();
