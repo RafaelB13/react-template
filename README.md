@@ -35,7 +35,7 @@ Make sure you have [Bun](https://bun.sh/) installed on your system.
 
     ```bash
     git clone
-    cd upload-to-s3
+    cd project
     ```
 
 2.  Install the dependencies:
