@@ -1,8 +1,8 @@
 import { GalleryVerticalEnd } from 'lucide-react';
 
-import { LoginForm } from '@/components/ui/login-form';
 import UploadBg from '@/assets/upload-login-logo.png';
 import { useFetchUserIP } from '@/core/presentation/hooks/fetch-user-ip.hook';
+import { LoginForm } from '@/modules/Auth/components/login-form';
 
 export default function LoginPage() {
   const { isUserIPLoading, userIP, userIpFetchError } = useFetchUserIP();

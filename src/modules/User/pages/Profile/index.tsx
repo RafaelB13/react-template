@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { SuccessAnimation } from '@/components/success-animation';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -15,31 +14,29 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useUserProfileController } from '@/modules/User/pages/Profile/controller';
+import { SuccessAnimation } from '@/components/success-animation';
+import { useUserProfileStore } from '@/modules/User/pages/Profile/store';
+import { UserProfileViewModel } from '@/modules/User/pages/Profile/view-model';
 
 export const UserProfilePage = () => {
-  const {
-    user,
-    formData,
-    isEditing,
-    showSuccess,
-    handleEditClick,
-    handleSaveClick,
-    handleChange,
-    handleEnable2FA,
-    handleDisable2FA,
-  } = useUserProfileController();
+  const viewModel = useMemo(() => new UserProfileViewModel(), []);
+  const { user, formData, isEditing, showSuccess } = useUserProfileStore();
+
   const [openEnable2faDialog, setOpenEnable2faDialog] = useState(false);
   const [openDisable2faDialog, setOpenDisable2faDialog] = useState(false);
 
+  useEffect(() => {
+    viewModel.fetchUser();
+  }, [viewModel]);
+
   const handleConfirmEnable2FA = async () => {
     setOpenEnable2faDialog(false);
-    await handleEnable2FA();
+    await viewModel.handleEnable2FA();
   };
 
   const handleConfirmDisable2FA = async () => {
     setOpenDisable2faDialog(false);
-    await handleDisable2FA();
+    await viewModel.handleDisable2FA();
   };
 
   return (
@@ -67,7 +64,7 @@ export const UserProfilePage = () => {
                 <Input
                   id="name"
                   value={formData.name || ''}
-                  onChange={handleChange}
+                  onChange={viewModel.handleChange}
                   disabled={!isEditing}
                   size={32}
                   className="h-8 text-sm"
@@ -79,7 +76,7 @@ export const UserProfilePage = () => {
                   id="email"
                   type="email"
                   value={formData.email || ''}
-                  onChange={handleChange}
+                  onChange={viewModel.handleChange}
                   disabled={!isEditing}
                   size={32}
                   className="h-8 text-sm"
@@ -92,7 +89,7 @@ export const UserProfilePage = () => {
                     id="password"
                     type="password"
                     placeholder="Enter new password"
-                    onChange={handleChange}
+                    onChange={viewModel.handleChange}
                     size={32}
                     className="h-8 text-sm"
                   />
@@ -101,15 +98,13 @@ export const UserProfilePage = () => {
               <div className="flex justify-end gap-2">
                 {isEditing ? (
                   <>
-                    <Button variant="outline" onClick={handleEditClick}>
+                    <Button variant="outline" onClick={viewModel.handleEditClick}>
                       Cancel
                     </Button>
-                    <Button onClick={handleSaveClick}>
-                      {'Save'}
-                    </Button>
+                    <Button onClick={viewModel.handleSaveClick}>{'Save'}</Button>
                   </>
                 ) : (
-                  <Button onClick={handleEditClick}>Edit Profile</Button>
+                  <Button onClick={viewModel.handleEditClick}>Edit Profile</Button>
                 )}
               </div>
             </CardContent>
@@ -205,7 +200,6 @@ export const UserProfilePage = () => {
                   <Input id="new-password" type="password" size={32} className="h-8 text-sm" />
                 </div>
                 <div className="grid max-w-xs gap-2">
-
                   <Label htmlFor="confirm-password">Confirm New Password</Label>
                   <Input id="confirm-password" type="password" size={32} className="h-8 text-sm" />
                 </div>

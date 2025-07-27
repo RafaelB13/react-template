@@ -1,9 +1,9 @@
-import { IUploadRepository } from '@/core/application/repositories/upload.repository';
+import { UploadS3FileUseCase } from './upload-s3-file.use-case';
 
 export class UploadFileUseCase {
-  constructor(private uploadRepository: IUploadRepository) {}
+  constructor(private uploadS3FileUseCase: UploadS3FileUseCase) {}
 
-  async execute(file: FormData): Promise<void> {
-    return this.uploadRepository.upload(file);
+  async execute(file: File): Promise<string> {
+    return this.uploadS3FileUseCase.execute(file);
   }
 }

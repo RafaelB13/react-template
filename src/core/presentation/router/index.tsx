@@ -9,6 +9,7 @@ import SignUpPage from '@/modules/Auth/page/SignIn';
 import TwoFactorAuthPage from '@/modules/Auth/page/TwoFactorAuthenctication';
 import { Home } from '@/modules/Home';
 import NotFoundPage from '@/modules/Show/pages/NotFound';
+import { ImageListPage } from '@/modules/Image/pages/List';
 import { UploadCreatePage } from '@/modules/Upload/pages/Create';
 import { UserProfilePage } from '@/modules/User/pages/Profile';
 
@@ -39,6 +40,14 @@ const AppRouter: React.FC = () => (
           element={
             <MainLayout>
               <UserProfilePage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path={routes.images}
+          element={
+            <MainLayout>
+              <ImageListPage />
             </MainLayout>
           }
         />

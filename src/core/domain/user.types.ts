@@ -1,4 +1,3 @@
-
 export interface IUserResponse {
   id: string;
   role: string;

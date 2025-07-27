@@ -1,13 +1,15 @@
-
 import { IUserRepository } from '@/core/application/repositories/user.repository';
-import { IUpdateUserDTO, IUserResponse } from '@/core/domain/user.types';
-import { IStorageService } from '@/core/application/services/storage.service';
 import { IHttpClient } from '@/core/application/services/http-client.service';
-import { handleServiceError } from '@/core/infrastructure/errors/handle-error';
+import { IStorageService } from '@/core/application/services/storage.service';
+import { IUpdateUserDTO, IUserResponse } from '@/core/domain/user.types';
 import { API_ROUTES } from '@/core/infrastructure/api/routes';
+import { handleApiError } from '@/core/infrastructure/errors/handle-error';
 
 export class UserGateway implements IUserRepository {
-  constructor(private storageService: IStorageService, private httpClient: IHttpClient) {}
+  constructor(
+    private storageService: IStorageService,
+    private httpClient: IHttpClient
+  ) {}
 
   async getMe(): Promise<IUserResponse> {
     try {
@@ -17,7 +19,7 @@ export class UserGateway implements IUserRepository {
 
       return response;
     } catch (error) {
-      handleServiceError(error, 'Failed to fetch user data.');
+      handleApiError(error, 'Failed to fetch user data.');
     }
   }
 
@@ -29,7 +31,15 @@ export class UserGateway implements IUserRepository {
 
       return response;
     } catch (error: unknown) {
-      handleServiceError(error, 'Failed to update user.');
+      handleApiError(error, 'Failed to update user.');
     }
+  }
+
+  async getProfilePhoto(_id: string): Promise<string> {
+    throw new Error("Method not implemented.");
+  }
+
+  async removeProfilePhoto(_id: string): Promise<void> {
+    throw new Error("Method not implemented.");
   }
 }

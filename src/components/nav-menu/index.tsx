@@ -1,8 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
 
+import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button-variants';
 import { routes } from '@/core/presentation/router/routes';
-import { cn } from '@/lib/utils';
 
 const menuItems = [
   {
@@ -12,6 +12,10 @@ const menuItems = [
   {
     href: routes.upload,
     label: 'Upload',
+  },
+  {
+    href: routes.images,
+    label: 'Images',
   }
 ];
 

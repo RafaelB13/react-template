@@ -1,22 +1,22 @@
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Token } from '@/core/di/tokens';
-
-// Services
-import { AxiosHttpClient } from '../infrastructure/api/axios';
-import { StorageService } from '../infrastructure/services/storage';
-
-// Gateways
-import { AuthGateway } from '../infrastructure/gateways/auth-gateway';
-import { UserGateway } from '../infrastructure/gateways/user-gateway';
-import { UploadGateway } from '../infrastructure/gateways/upload-gateway';
-
-
-
+import { DisableTwoFactorAuthenticationUseCase } from '../application/use-cases/disable-two-factor-authentication.use-case';
+import { EnableTwoFactorAuthenticationUseCase } from '../application/use-cases/enable-two-factor-authentication.use-case';
 // Use Cases
 import { GetUserUseCase } from '../application/use-cases/get-user.use-case';
+import { RequestTwoFactorAuthenticationUseCase } from '../application/use-cases/request-two-factor-authentication.use-case';
 import { UpdateUserUseCase } from '../application/use-cases/update-user.use-case';
 import { UploadFileUseCase } from '../application/use-cases/upload-file.use-case';
+import { UploadS3FileUseCase } from '../application/use-cases/upload-s3-file.use-case';
+import { ListS3ImagesUseCase } from '../application/use-cases/list-s3-images.use-case';
+// Services
+import { AxiosHttpClient } from '../infrastructure/api/axios';
+// Gateways
+import { AuthGateway } from '../infrastructure/gateways/auth-gateway';
+import { UploadGateway } from '../infrastructure/gateways/upload-gateway';
+import { S3Service } from '../infrastructure/gateways/s3-gateway';
+import { UserGateway } from '../infrastructure/gateways/user-gateway';
+import { StorageService } from '../infrastructure/services/storage';
 
 export type Factory<T> = (container: DIContainer) => T;
 
@@ -26,7 +26,7 @@ export class DIContainer {
 
   register<T>(token: keyof any, factory: Factory<T>): void {
     if (this.dependencies.has(token)) {
-      console.warn(`Dependency with token ${String(token)} is already registered and will be overwritten.`);
+      // console.warn(`Dependency with token ${String(token)} is already registered and will be overwritten.`);
     }
     this.dependencies.set(token, factory);
   }
@@ -54,22 +54,22 @@ export class DIContainer {
 export const container = new DIContainer();
 
 // --- Services ---
-container.register(
-  Token.StorageService, () => new StorageService()
-);
-container.register(
-  Token.HttpClient, () => new AxiosHttpClient()
-);
+container.register(Token.StorageService, () => new StorageService());
+container.register(Token.HttpClient, () => new AxiosHttpClient());
 
 // --- Gateways / Repositories ---
 container.register(
-  Token.AuthGateway, (c) => new AuthGateway(
-    c.resolve(Token.StorageService),
-    c.resolve(Token.HttpClient)
-  )
+  Token.AuthGateway,
+  (c) =>
+    new AuthGateway(
+      c.resolve(Token.StorageService),
+      c.resolve(Token.HttpClient),
+      c.resolve(Token.UserGateway),
+    )
 );
 container.register(
-  Token.UserGateway, (c) => new UserGateway(
+  Token.UserGateway,
+  (c) => new UserGateway(
     c.resolve(Token.StorageService),
     c.resolve(Token.HttpClient)
   )
@@ -82,36 +82,36 @@ container.register(
 
 // --- Repositories ---
 container.register(
-  Token.AuthRepository, (c) => new AuthGateway(
-    c.resolve(Token.StorageService),
-    c.resolve(Token.HttpClient)
-  )
+  Token.AuthRepository,
+  (c) =>
+    new AuthGateway(
+      c.resolve(Token.StorageService),
+      c.resolve(Token.HttpClient),
+      c.resolve(Token.UserGateway),
+    )
 );
 container.register(
-  Token.UserRepository, (c) => new UserGateway(
-    c.resolve(Token.StorageService),
-    c.resolve(Token.HttpClient)
-  )
+  Token.UserRepository,
+  (c) => new UserGateway(c.resolve(Token.StorageService), c.resolve(Token.HttpClient))
 );
-container.register(
-  Token.UploadRepository, (c) => new UploadGateway(
-    c.resolve(Token.HttpClient)
-  )
-);
+container.register(Token.UploadRepository, (c) => new UploadGateway(c.resolve(Token.HttpClient)));
+container.register(Token.S3Repository, () => new S3Service());
 
 // --- Use Cases ---
+container.register(Token.GetUserUseCase, (c) => new GetUserUseCase(c.resolve(Token.UserRepository)));
+container.register(Token.UpdateUserUseCase, (c) => new UpdateUserUseCase(c.resolve(Token.UserRepository)));
+container.register(Token.UploadFileUseCase, (c) => new UploadFileUseCase(c.resolve(Token.UploadS3FileUseCase)));
+container.register(Token.UploadS3FileUseCase, (c) => new UploadS3FileUseCase(c.resolve(Token.S3Repository)));
+container.register(Token.ListS3ImagesUseCase, (c) => new ListS3ImagesUseCase(c.resolve(Token.S3Repository)));
 container.register(
-  Token.GetUserUseCase, (c) => new GetUserUseCase(
-    c.resolve(Token.UserRepository)
-  )
+  Token.EnableTwoFactorAuthenticationUseCase,
+  (c) => new EnableTwoFactorAuthenticationUseCase(c.resolve(Token.AuthRepository))
 );
 container.register(
-  Token.UpdateUserUseCase, (c) => new UpdateUserUseCase(
-    c.resolve(Token.UserRepository)
-  )
+  Token.RequestTwoFactorAuthenticationUseCase,
+  (c) => new RequestTwoFactorAuthenticationUseCase(c.resolve(Token.AuthRepository))
 );
 container.register(
-  Token.UploadFileUseCase, (c) => new UploadFileUseCase(
-    c.resolve(Token.UploadRepository)
-  )
+  Token.DisableTwoFactorAuthenticationUseCase,
+  (c) => new DisableTwoFactorAuthenticationUseCase(c.resolve(Token.AuthRepository))
 );

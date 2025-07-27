@@ -1,8 +1,8 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
-import { useLoadingStore } from '@/core/presentation/stores/use-loading.store';
-import { ApiError, ApiResponse } from '@/core/infrastructure/api/types';
 import { handleAxiosError } from '@/core/infrastructure/api/axios/utils';
+import { ApiError, ApiResponse } from '@/core/infrastructure/api/types';
+import { useLoadingStore } from '@/core/presentation/stores/use-loading.store';
 
 const API_BASE_URL = import.meta.env.API_BASE_URL || 'http://localhost:3000';
 
@@ -27,7 +27,7 @@ apiInstance.interceptors.request.use(
   (error) => {
     useLoadingStore.getState().decrementRequestCount();
     return Promise.reject(error);
-  },
+  }
 );
 
 /**
@@ -56,7 +56,7 @@ apiInstance.interceptors.response.use(
     }
 
     return Promise.reject(apiError); // Rejects the Promise with the standardized error
-  },
+  }
 );
 
 export default apiInstance;

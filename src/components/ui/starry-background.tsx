@@ -1,5 +1,5 @@
 // src/components/ui/starry-background.tsx
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const StarryBackground: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -17,7 +17,7 @@ const StarryBackground: React.FC = () => {
 
     const animate = () => {
       const { innerWidth, innerHeight } = window;
-      
+
       // Target position based on mouse, creating parallax effect
       const targetX = (mousePos.current.x / innerWidth - 0.5) * -40; // Increased range for more effect
       const targetY = (mousePos.current.y / innerHeight - 0.5) * -40;
@@ -43,7 +43,8 @@ const StarryBackground: React.FC = () => {
     };
   }, []);
 
-  const stars = [...Array(150)].map((_, i) => ({ // Increased star count
+  const stars = [...Array(150)].map((_, i) => ({
+    // Increased star count
     key: i,
     cx: Math.random() * 2000,
     cy: Math.random() * 2000,
@@ -70,7 +71,7 @@ const StarryBackground: React.FC = () => {
         height="100%"
         viewBox="0 0 2000 2000"
         preserveAspectRatio="xMidYMid slice"
-        className="w-full h-full"
+        className="h-full w-full"
       >
         <rect width="100%" height="100%" fill="transparent" />
         {stars.map((star) => (

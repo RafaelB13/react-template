@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { NavMenu } from '@/components/nav-menu';
-import { SettingsMenu } from '@/components/settings-menu';
 import GlobalLoader from '@/components/ui/global-loader';
 import StarryBackground from '@/components/ui/starry-background';
+import { NavMenu } from '@/components/nav-menu';
+import { SettingsMenu } from '@/components/settings-menu';
 
 interface MainLayoutProps {
   children: React.ReactNode;

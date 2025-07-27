@@ -14,10 +14,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { routes } from '@/core/presentation/router/routes';
-import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
-import { StorageService } from '@/core/infrastructure/services/storage';
 import { AxiosHttpClient } from '@/core/infrastructure/api/axios/http-client';
+import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
+import { UserGateway } from '@/core/infrastructure/gateways/user-gateway';
+import { StorageService } from '@/core/infrastructure/services/storage';
+import { routes } from '@/core/presentation/router/routes';
 
 export function SignUpForm({ className, ...props }: React.ComponentProps<'form'>) {
   const [name, setName] = useState<string>('');
@@ -45,7 +46,8 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'form'>
 
         const storageService = new StorageService();
         const httpClient = new AxiosHttpClient();
-        const signUpService = new AuthGateway(storageService, httpClient);
+        const userGateway = new UserGateway(storageService, httpClient);
+        const signUpService = new AuthGateway(storageService, httpClient, userGateway);
 
         await signUpService.register({
           name,
