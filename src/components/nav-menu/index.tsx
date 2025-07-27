@@ -13,6 +13,10 @@ const menuItems = [
     href: routes.upload,
     label: 'Upload',
   },
+  {
+    href: routes.images,
+    label: 'Images',
+  }
 ];
 
 export const NavMenu = () => {

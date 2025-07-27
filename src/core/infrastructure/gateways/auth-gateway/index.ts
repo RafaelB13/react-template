@@ -61,9 +61,7 @@ export class AuthGateway implements IAuthRepository {
 
   async requestTwoFactorAuthentication(): Promise<{ message: string }> {
     try {
-      const response = await this.httpClient.post<{ message: string }>(API_ROUTES.auth.requestTwoFactorAuth);
-
-      return response;
+      return await this.httpClient.post<{ message: string }>(API_ROUTES.auth.requestTwoFactorAuth);
     } catch (error: unknown) {
       handleApiError(error, 'Failed to request two-factor authentication.');
     }

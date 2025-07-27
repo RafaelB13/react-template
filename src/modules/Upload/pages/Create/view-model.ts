@@ -42,11 +42,8 @@ export const useUploadCreateViewModel = () => {
 
     setIsUploading(true);
     setUploadSuccess(false);
-    const formData = new FormData();
-    formData.append('file', file);
-
     try {
-      await uploadFileUseCase.execute(formData);
+      await uploadFileUseCase.execute(file);
       setUploadSuccess(true);
       toast.success('File uploaded successfully!');
     } catch (error) {

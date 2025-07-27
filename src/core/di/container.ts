@@ -7,11 +7,14 @@ import { GetUserUseCase } from '../application/use-cases/get-user.use-case';
 import { RequestTwoFactorAuthenticationUseCase } from '../application/use-cases/request-two-factor-authentication.use-case';
 import { UpdateUserUseCase } from '../application/use-cases/update-user.use-case';
 import { UploadFileUseCase } from '../application/use-cases/upload-file.use-case';
+import { UploadS3FileUseCase } from '../application/use-cases/upload-s3-file.use-case';
+import { ListS3ImagesUseCase } from '../application/use-cases/list-s3-images.use-case';
 // Services
 import { AxiosHttpClient } from '../infrastructure/api/axios';
 // Gateways
 import { AuthGateway } from '../infrastructure/gateways/auth-gateway';
 import { UploadGateway } from '../infrastructure/gateways/upload-gateway';
+import { S3Service } from '../infrastructure/gateways/s3-gateway';
 import { UserGateway } from '../infrastructure/gateways/user-gateway';
 import { StorageService } from '../infrastructure/services/storage';
 
@@ -92,11 +95,14 @@ container.register(
   (c) => new UserGateway(c.resolve(Token.StorageService), c.resolve(Token.HttpClient))
 );
 container.register(Token.UploadRepository, (c) => new UploadGateway(c.resolve(Token.HttpClient)));
+container.register(Token.S3Repository, () => new S3Service());
 
 // --- Use Cases ---
 container.register(Token.GetUserUseCase, (c) => new GetUserUseCase(c.resolve(Token.UserRepository)));
 container.register(Token.UpdateUserUseCase, (c) => new UpdateUserUseCase(c.resolve(Token.UserRepository)));
-container.register(Token.UploadFileUseCase, (c) => new UploadFileUseCase(c.resolve(Token.UploadRepository)));
+container.register(Token.UploadFileUseCase, (c) => new UploadFileUseCase(c.resolve(Token.UploadS3FileUseCase)));
+container.register(Token.UploadS3FileUseCase, (c) => new UploadS3FileUseCase(c.resolve(Token.S3Repository)));
+container.register(Token.ListS3ImagesUseCase, (c) => new ListS3ImagesUseCase(c.resolve(Token.S3Repository)));
 container.register(
   Token.EnableTwoFactorAuthenticationUseCase,
   (c) => new EnableTwoFactorAuthenticationUseCase(c.resolve(Token.AuthRepository))

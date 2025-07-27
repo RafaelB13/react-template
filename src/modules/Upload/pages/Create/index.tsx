@@ -159,9 +159,8 @@ export const UploadCreatePage = () => {
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
               <div
-                className={`border-border hover:border-primary/50 cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors ${
-                  isDragOver ? 'border-primary bg-primary/5' : ''
-                } ${isPasteActive ? 'border-green-500 bg-green-500/10' : ''}`}
+                className={`border-border hover:border-primary/50 cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors ${isDragOver ? 'border-primary bg-primary/5' : ''
+                  } ${isPasteActive ? 'border-green-500 bg-green-500/10' : ''}`}
                 onClick={handleAreaClick}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}

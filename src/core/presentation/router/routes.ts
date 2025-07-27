@@ -6,6 +6,7 @@ export const routes = {
   login: '/login',
   sign_up: '/signup',
   profile: '/profile',
+  images: '/images',
   two_factor_authentication: '/two-factor-authentication',
   logout: '/logout',
   auth_callback: '/auth/callback',

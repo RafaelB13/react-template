@@ -9,17 +9,19 @@ import { SuccessAnimation } from '@/components/success-animation';
 import { ThemeCustomizer } from '@/components/theme-customizer';
 import { AxiosHttpClient } from '@/core/infrastructure/api/axios/http-client';
 import { AuthGateway } from '@/core/infrastructure/gateways/auth-gateway';
+import { UserGateway } from '@/core/infrastructure/gateways/user-gateway';
 import { StorageService } from '@/core/infrastructure/services/storage';
 import { routes } from '@/core/presentation/router/routes';
 import { useSettingsMenuStore } from '@/stores/use-settings-menu.store';
 
 const storageService = new StorageService();
 const httpClient = new AxiosHttpClient();
+const userGateway = new UserGateway(storageService, httpClient);
 
 export const SettingsMenu = () => {
   const { isOpen, toggle } = useSettingsMenuStore();
   const [showAnimation, setShowAnimation] = useState(false);
-  const authService = new AuthGateway(storageService, httpClient);
+  const authService = new AuthGateway(storageService, httpClient, userGateway);
   const navigate = useNavigate();
 
   const data = typeof window !== 'undefined' ? JSON.parse(storageService.getItem('user') || '{}') : {};

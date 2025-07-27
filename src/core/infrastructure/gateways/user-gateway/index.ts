@@ -34,4 +34,12 @@ export class UserGateway implements IUserRepository {
       handleApiError(error, 'Failed to update user.');
     }
   }
+
+  async getProfilePhoto(_id: string): Promise<string> {
+    throw new Error("Method not implemented.");
+  }
+
+  async removeProfilePhoto(_id: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
 }
