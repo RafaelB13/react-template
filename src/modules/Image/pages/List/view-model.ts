@@ -20,7 +20,6 @@ export const useImageListPageViewModel = () => {
         const urls = await listS3ImagesUseCase.execute();
         setImageUrls(urls);
       } catch (err) {
-        console.error('Failed to fetch images:', err);
         setError(err instanceof Error ? err.message : 'Failed to load images.');
         toast.error(err instanceof Error ? err.message : 'Failed to load images.');
       } finally {

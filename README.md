@@ -1,6 +1,4 @@
-# S3 File Uploader
-
-This project is a modern, responsive web application designed for uploading files to an AWS S3 bucket. It features a clean user interface, secure user authentication, and a straightforward file management process.
+# React Base Project
 
 ## ✨ Features
 
@@ -36,7 +34,7 @@ Make sure you have [Bun](https://bun.sh/) installed on your system.
 1.  Clone the repository:
 
     ```bash
-    git clone https://your-repository-url.git
+    git clone
     cd upload-to-s3
     ```
 
